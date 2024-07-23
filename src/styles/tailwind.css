@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+body {
+	font-family: "Montserrat", sans-serif;
+}
+
+@font-face {
+	font-family: "UTM-Amerika-Sans";
+	src: local("UTM-Amerika-Sans"), url("../assets/fonts/UTM-Amerika-Sans.ttf");
+}
+
+@font-face {
+	font-family: "UTM-BryantLG";
+	src: local("UTM-BryantLG"), url("../assets/fonts/UTM-BryantLG.ttf");
+}
+
+@font-face {
+	font-family: "UTM-BryantLG_B";
+	src: local("UTM-BryantLG_B"), url("../assets/fonts/UTM-BryantLG_B.ttf");
+}
