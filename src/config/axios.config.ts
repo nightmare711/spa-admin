@@ -1,4 +1,4 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { dispatch } from "../store";
 import { deleteAccount } from "../store/user";
 
@@ -43,7 +43,7 @@ instance.interceptors.response.use(
 		console.log("axiosError", axiosError.response?.data?.statusCode);
 
 		if (axiosError.response?.data?.statusCode === 401) {
-			console.log()
+			console.log();
 
 			dispatch(deleteAccount());
 		}

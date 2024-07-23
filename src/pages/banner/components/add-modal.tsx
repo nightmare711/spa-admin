@@ -31,7 +31,7 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 		onClose();
 	};
 
-	const onChange = (imageList: any, addUpdateIndex: any) => {
+	const onChange = (imageList: any) => {
 		// data for submit
 		setImages(imageList);
 		setValue("url", imageList?.[0]?.data_url);
@@ -90,30 +90,36 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 						onImageRemove,
 						isDragging,
 						dragProps,
-					}) => (
-						// write your building UI
-						<div className="upload__image-wrapper">
-							<button
-								className="update"
-								style={isDragging ? { color: "red" } : undefined}
-								onClick={onImageUpload}
-								{...dragProps}
-							>
-								Click or Drop here
-							</button>
-							&nbsp;
-							{imageList.map((image, index) => (
-								<div key={index} className="image-item">
-									<img src={image["data_url"]} alt="" width="100" />
-									<div className="image-item__btn-wrapper">
-										<Button color="error" onClick={() => onImageRemove(index)}>
-											Remove
-										</Button>
+					}) => {
+						console.log(onImageRemoveAll, onImageUpdate);
+						return (
+							// write your building UI
+							<div className="upload__image-wrapper">
+								<button
+									className="update"
+									style={isDragging ? { color: "red" } : undefined}
+									onClick={onImageUpload}
+									{...dragProps}
+								>
+									Click or Drop here
+								</button>
+								&nbsp;
+								{imageList.map((image, index) => (
+									<div key={index} className="image-item">
+										<img src={image["data_url"]} alt="" width="100" />
+										<div className="image-item__btn-wrapper">
+											<Button
+												color="error"
+												onClick={() => onImageRemove(index)}
+											>
+												Remove
+											</Button>
+										</div>
 									</div>
-								</div>
-							))}
-						</div>
-					)}
+								))}
+							</div>
+						);
+					}}
 				</ImageUploading>
 				{error && (
 					<Alert style={{ marginBottom: "10px" }} severity="error">

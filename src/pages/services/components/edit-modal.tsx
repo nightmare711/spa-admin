@@ -87,13 +87,13 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 		onClose();
 	};
 
-	const onChange = (imageList: any, addUpdateIndex: any) => {
+	const onChange = (imageList: any) => {
 		// data for submit
 		setImages(imageList);
 		setValue("image", imageList?.[0]?.data_url);
 	};
 
-	const onChangeBanner = (imageList: any, addUpdateIndex: any) => {
+	const onChangeBanner = (imageList: any) => {
 		// data for submit
 		setBanner(imageList);
 		setValue("banner", imageList?.[0]?.data_url);
@@ -199,39 +199,45 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 						onImageRemove,
 						isDragging,
 						dragProps,
-					}) => (
-						// write your building UI
-						<div className="upload__image-wrapper">
-							<span className="label-uploader">Preview Image</span>
-							{images.length < maxNumber && (
-								<button
-									className="update"
-									style={isDragging ? { color: "red" } : undefined}
-									onClick={onImageUpload}
-									{...dragProps}
-								>
-									Click or Drop here
-								</button>
-							)}
-							{imageList.map((image, index) => (
-								<div key={index} className="image-item">
-									<PhotoView src={image["data_url"]}>
-										<img
-											src={image["data_url"]}
-											alt=""
-											style={{ width: 150, height: 150, objectFit: "cover" }}
-										/>
-									</PhotoView>
+					}) => {
+						console.log(onImageRemoveAll, onImageUpdate);
+						return (
+							// write your building UI
+							<div className="upload__image-wrapper">
+								<span className="label-uploader">Preview Image</span>
+								{images.length < maxNumber && (
+									<button
+										className="update"
+										style={isDragging ? { color: "red" } : undefined}
+										onClick={onImageUpload}
+										{...dragProps}
+									>
+										Click or Drop here
+									</button>
+								)}
+								{imageList.map((image, index) => (
+									<div key={index} className="image-item">
+										<PhotoView src={image["data_url"]}>
+											<img
+												src={image["data_url"]}
+												alt=""
+												style={{ width: 150, height: 150, objectFit: "cover" }}
+											/>
+										</PhotoView>
 
-									<div className="image-item__btn-wrapper">
-										<Button color="error" onClick={() => onImageRemove(index)}>
-											Remove
-										</Button>
+										<div className="image-item__btn-wrapper">
+											<Button
+												color="error"
+												onClick={() => onImageRemove(index)}
+											>
+												Remove
+											</Button>
+										</div>
 									</div>
-								</div>
-							))}
-						</div>
-					)}
+								))}
+							</div>
+						);
+					}}
 				</ImageUploading>
 				<ImageUploading
 					multiple
@@ -248,43 +254,53 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 						onImageRemove,
 						isDragging,
 						dragProps,
-					}) => (
-						// write your building UI
-						<div className="upload__image-wrapper">
-							<span className="label-uploader">Banner</span>
-							{banner.length < maxNumber && (
-								<button
-									className="update"
-									style={isDragging ? { color: "red" } : undefined}
-									onClick={onImageUpload}
-									{...dragProps}
-								>
-									Click or Drop here
-								</button>
-							)}
-							{imageList.map((image, index) => (
-								<div
-									style={{ width: "100%" }}
-									key={index}
-									className="image-item"
-								>
-									<PhotoView src={image["data_url"]}>
-										<img
-											src={image["data_url"]}
-											alt=""
-											style={{ width: "100%", height: 250, objectFit: "cover" }}
-										/>
-									</PhotoView>
+					}) => {
+						console.log(onImageRemoveAll, onImageUpdate);
+						return (
+							// write your building UI
+							<div className="upload__image-wrapper">
+								<span className="label-uploader">Banner</span>
+								{banner.length < maxNumber && (
+									<button
+										className="update"
+										style={isDragging ? { color: "red" } : undefined}
+										onClick={onImageUpload}
+										{...dragProps}
+									>
+										Click or Drop here
+									</button>
+								)}
+								{imageList.map((image, index) => (
+									<div
+										style={{ width: "100%" }}
+										key={index}
+										className="image-item"
+									>
+										<PhotoView src={image["data_url"]}>
+											<img
+												src={image["data_url"]}
+												alt=""
+												style={{
+													width: "100%",
+													height: 250,
+													objectFit: "cover",
+												}}
+											/>
+										</PhotoView>
 
-									<div className="image-item__btn-wrapper">
-										<Button color="error" onClick={() => onImageRemove(index)}>
-											Remove
-										</Button>
+										<div className="image-item__btn-wrapper">
+											<Button
+												color="error"
+												onClick={() => onImageRemove(index)}
+											>
+												Remove
+											</Button>
+										</div>
 									</div>
-								</div>
-							))}
-						</div>
-					)}
+								))}
+							</div>
+						);
+					}}
 				</ImageUploading>
 				<ReactQuill
 					theme="snow"
