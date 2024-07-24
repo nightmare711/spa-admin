@@ -1,5 +1,5 @@
 import { Modal } from "antd";
-import { memo, useState } from "react";
+import { memo, useState, useCallback, useMemo, useRef } from "react";
 import { Wrapper } from "./add-modal.styled";
 import { Alert, Button, TextField } from "@mui/material";
 import ImageUploading from "react-images-uploading";
@@ -7,32 +7,13 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { useForm } from "react-hook-form";
 import ReactQuill from "react-quill";
 import { useAddService } from "../../../hooks/useServices";
+import { useUploadImage } from "../../../hooks/useUpload";
 import { PhotoView } from "react-photo-view";
 
 interface IEditModalProps {
 	open: boolean;
 	onClose: () => void;
 }
-
-const modules = {
-	toolbar: [
-		[{ header: "1" }, { header: "2" }, { font: [] }],
-		[{ size: [] }],
-		["bold", "italic", "underline", "strike", "blockquote"],
-		[
-			{ list: "ordered" },
-			{ list: "bullet" },
-			{ indent: "-1" },
-			{ indent: "+1" },
-		],
-		["link", "image", "video"],
-		["clean"],
-	],
-	clipboard: {
-		// toggle to add extra line breaks when pasting HTML:
-		matchVisual: false,
-	},
-};
 /*
  * Quill editor formats
  * See https://quilljs.com/docs/formats/
@@ -57,6 +38,7 @@ const formats = [
 const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 	const [error, setError] = useState("");
 	const { mutateAsync: addService, isPending } = useAddService();
+	const { mutateAsync: uploadImage, isPending: isUploading } = useUploadImage();
 	const {
 		register,
 		setValue,
@@ -75,9 +57,10 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 		},
 	});
 
-	const [images, setImages] = useState([]);
-	const [banner, setBanner] = useState([]);
+	const [images, setImages] = useState<any>([]);
+	const [banner, setBanner] = useState<any>([]);
 	const maxNumber = 1;
+	const quillRef = useRef<any>();
 
 	const handleClose = () => {
 		reset();
@@ -104,14 +87,13 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 			return;
 		}
 		const image = getValues("image");
-		const banner = getValues("banner");
 		const content = getValues("content");
 		if (!image) {
 			setError("Please upload an image to proceed.");
 			return;
 		}
-		if (!banner) {
-			setError("Please upload an banner to proceed.");
+		if (banner.length === 0) {
+			setError("Please upload a banner to proceed.");
 			return;
 		}
 		if (!content) {
@@ -126,18 +108,81 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 			.replace(/Đ/g, "D")
 			.replaceAll(" ", "-")
 			.toLowerCase();
-		const response = await addService({
-			title: values.title,
-			description: values.description,
-			slug,
-			image,
-			banner: values.banner,
-			content,
-		} as any);
-		if (response) {
-			handleClose();
+
+		if (images?.[0]?.file) {
+			const res = await uploadImage(images?.[0]?.file);
+			const resBanner = await uploadImage(banner?.[0]?.file);
+
+			await addService({
+				title: values.title,
+				description: values.description,
+				slug,
+				image: res?.data?.url,
+				banner: resBanner?.data?.url,
+				content,
+			} as any);
+		} else {
+			await addService({
+				title: values.title,
+				description: values.description,
+				slug,
+				image: image,
+				banner: getValues("banner"),
+				content,
+			} as any);
 		}
+
+		handleClose();
 	};
+
+	const imageHandler = useCallback(() => {
+		const input: any = document.createElement("input");
+		input.setAttribute("type", "file");
+		input.click();
+
+		input.onchange = async () => {
+			const file = input?.files?.[0];
+			const quillObj = quillRef?.current?.getEditor();
+			const range = quillObj?.getSelection();
+			try {
+				const res = await uploadImage(file);
+				quillObj?.editor?.insertEmbed(range?.index, "image", res?.data?.url);
+				setValue(
+					"content",
+					document.querySelector(".ql-editor")?.innerHTML as string
+				);
+			} catch (err) {
+				console.log("Storage err: ", err);
+			}
+		};
+	}, [uploadImage, setValue]);
+
+	const modules = useMemo(
+		() => ({
+			toolbar: {
+				container: [
+					[{ header: "1" }, { header: "2" }, { font: [] }],
+					[{ size: [] }],
+					["bold", "italic", "underline", "strike", "blockquote"],
+					[
+						{ list: "ordered" },
+						{ list: "bullet" },
+						{ indent: "-1" },
+						{ indent: "+1" },
+					],
+					["link", "image", "video"],
+					["clean"],
+				],
+				handlers: {
+					image: imageHandler,
+				},
+			},
+			clipboard: {
+				matchVisual: false,
+			},
+		}),
+		[imageHandler]
+	);
 
 	return (
 		<Modal
@@ -288,6 +333,7 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 					}}
 				</ImageUploading>
 				<ReactQuill
+					ref={quillRef}
 					value={watch("content")}
 					onChange={(value) => setValue("content", value)}
 					bounds={".app"}
@@ -313,12 +359,12 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 						Cancel
 					</LoadingButton>
 					<LoadingButton
-						loading={isPending}
+						loading={isPending || isUploading}
 						onClick={handleSubmit}
 						variant="contained"
 						color="success"
 					>
-						Add New Banner
+						Add New Service
 					</LoadingButton>
 				</div>
 			</Wrapper>

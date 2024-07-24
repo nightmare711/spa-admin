@@ -23,6 +23,7 @@ import { EditModal } from "./components/edit-modal";
 import { withLoading } from "../../components/ui/loading/with-loading";
 
 const ServicesComponent = withLoading(({ turnOffPageLoading }) => {
+	const [forceRender, setForceRender] = useState(false);
 	const [open, setOpen] = useState(false);
 	const { data, isFetched } = useGetServices();
 	const root = useRouterState();
@@ -39,6 +40,8 @@ const ServicesComponent = withLoading(({ turnOffPageLoading }) => {
 		}
 	}, [isFetched, turnOffPageLoading]);
 
+	const refetch = () => setForceRender(!forceRender);
+
 	return (
 		<Wrapper>
 			<AddModal open={open} onClose={() => setOpen(false)} />
@@ -47,6 +50,7 @@ const ServicesComponent = withLoading(({ turnOffPageLoading }) => {
 					open={!!selectedItem}
 					onClose={onClose}
 					item={selectedItem}
+					refetch={refetch}
 				/>
 			) : null}
 			<Breadcrumb style={{ margin: "16px 0" }}>

@@ -1,5 +1,5 @@
 import { Modal } from "antd";
-import { memo, useState } from "react";
+import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { Wrapper } from "./add-modal.styled";
 import { Alert, Button, TextField } from "@mui/material";
 import ImageUploading from "react-images-uploading";
@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import ReactQuill from "react-quill";
 import { PhotoView } from "react-photo-view";
 import { useAddNews } from "../../../hooks/useNews";
+import { useUploadImage } from "../../../hooks/useUpload";
 
 interface IEditModalProps {
 	open: boolean;
@@ -55,6 +56,8 @@ const formats = [
 ];
 
 const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
+	const quillRef = useRef<any>();
+	const { mutateAsync: uploadImage, isPending: isUploading } = useUploadImage();
 	const [error, setError] = useState("");
 	const { mutateAsync: addNew, isPending } = useAddNews();
 	const {
@@ -75,8 +78,8 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 		},
 	});
 
-	const [images, setImages] = useState([]);
-	const [banner, setBanner] = useState([]);
+	const [images, setImages] = useState<any>([]);
+	const [banner, setBanner] = useState<any>([]);
 	const maxNumber = 1;
 
 	const handleClose = () => {
@@ -104,14 +107,13 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 			return;
 		}
 		const image = getValues("image");
-		const banner = getValues("banner");
 		const content = getValues("content");
 		if (!image) {
 			setError("Please upload an image to proceed.");
 			return;
 		}
-		if (!banner) {
-			setError("Please upload an banner to proceed.");
+		if (banner.length === 0) {
+			setError("Please upload a banner to proceed.");
 			return;
 		}
 		if (!content) {
@@ -126,18 +128,76 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 			.replace(/Đ/g, "D")
 			.replaceAll(" ", "-")
 			.toLowerCase();
-		const response = await addNew({
-			title: values.title,
-			description: values.description,
-			slug,
-			image,
-			banner: values.banner,
-			content,
-		} as any);
-		if (response) {
-			handleClose();
+
+		if (images?.[0]?.file) {
+			const res = await uploadImage(images?.[0]?.file);
+			const resBanner = await uploadImage(banner?.[0]?.file);
+
+			await addNew({
+				title: values.title,
+				description: values.description,
+				slug,
+				image: res?.data?.url,
+				banner: resBanner?.data?.url,
+				content,
+			} as any);
+		} else {
+			await addNew({
+				title: values.title,
+				description: values.description,
+				slug,
+				image: image,
+				banner: getValues("banner"),
+				content,
+			} as any);
 		}
+
+		handleClose();
 	};
+
+	const imageHandler = useCallback(() => {
+		const input: any = document.createElement("input");
+		input.setAttribute("type", "file");
+		input.click();
+
+		input.onchange = async () => {
+			const file = input?.files?.[0];
+			const quillObj = quillRef?.current?.getEditor();
+			const range = quillObj?.getSelection();
+			try {
+				const res = await uploadImage(file);
+				quillObj?.editor?.insertEmbed(range?.index, "image", res?.data?.url);
+				setValue(
+					"content",
+					document.querySelector(".ql-editor")?.innerHTML as string
+				);
+			} catch (err) {
+				console.log("Storage err: ", err);
+			}
+		};
+	}, [uploadImage, setValue]);
+
+	const modules = useMemo(
+		() => ({
+			toolbar: {
+				container: [
+					[{ header: "1" }, { header: "2" }, { font: [] }],
+					[{ size: [] }],
+					["bold", "italic", "underline", "strike", "blockquote"],
+					[
+						{ list: "ordered" },
+						{ list: "bullet" },
+						{ indent: "-1" },
+						{ indent: "+1" },
+					],
+					["link", "image", "video"],
+					["clean"],
+				],
+				handlers: { image: () => imageHandler() },
+			},
+		}),
+		[imageHandler]
+	);
 
 	return (
 		<Modal
@@ -286,8 +346,16 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 					}}
 				</ImageUploading>
 				<ReactQuill
+					ref={(element) => {
+						if (element != null) {
+							quillRef.current = element;
+						}
+					}}
 					value={watch("content")}
-					onChange={(value) => setValue("content", value)}
+					onChange={(content, delta, source, editor) => {
+						console.log("##11", content, delta, source);
+						setValue("content", editor.getHTML());
+					}}
 					bounds={".app"}
 					placeholder={"Write something.."}
 					modules={modules}
@@ -311,12 +379,12 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 						Cancel
 					</LoadingButton>
 					<LoadingButton
-						loading={isPending}
+						loading={isPending || isUploading}
 						onClick={handleSubmit}
 						variant="contained"
 						color="success"
 					>
-						Add New Banner
+						Add New
 					</LoadingButton>
 				</div>
 			</Wrapper>

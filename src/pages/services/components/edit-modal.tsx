@@ -1,5 +1,5 @@
 import { Modal } from "antd";
-import { memo, useEffect, useState } from "react";
+import { memo, useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { Wrapper } from "./edit-modal.styled";
 import { Alert, Button, TextField } from "@mui/material";
 import ImageUploading from "react-images-uploading";
@@ -7,33 +7,15 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { useForm } from "react-hook-form";
 import ReactQuill from "react-quill";
 import { useUpdateServiceById } from "../../../hooks/useServices";
+import { useUploadImage } from "../../../hooks/useUpload";
 import { PhotoView } from "react-photo-view";
 
 interface IEditModalProps {
 	open: boolean;
 	onClose: () => void;
 	item: any;
+	refetch?: () => void;
 }
-
-const modules = {
-	toolbar: [
-		[{ header: "1" }, { header: "2" }, { font: [] }],
-		[{ size: [] }],
-		["bold", "italic", "underline", "strike", "blockquote"],
-		[
-			{ list: "ordered" },
-			{ list: "bullet" },
-			{ indent: "-1" },
-			{ indent: "+1" },
-		],
-		["link", "image", "video"],
-		["clean"],
-	],
-	clipboard: {
-		// toggle to add extra line breaks when pasting HTML:
-		matchVisual: false,
-	},
-};
 /*
  * Quill editor formats
  * See https://quilljs.com/docs/formats/
@@ -55,9 +37,17 @@ const formats = [
 	"video",
 ];
 
-const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
+const EditModalComponent = ({
+	open,
+	onClose,
+	item,
+	refetch,
+}: IEditModalProps) => {
+	const quillRef = useRef<any>();
+	const { mutateAsync: uploadImage, isPending: isUploading } = useUploadImage();
 	const [error, setError] = useState("");
-	const { mutateAsync: addService, isPending } = useUpdateServiceById();
+	const { mutateAsync: updateService, isPending } =
+		useUpdateServiceById(refetch);
 	const {
 		register,
 		setValue,
@@ -76,8 +66,8 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 		},
 	});
 
-	const [images, setImages] = useState([]);
-	const [banner, setBanner] = useState([]);
+	const [images, setImages] = useState<any>([]);
+	const [banner, setBanner] = useState<any>([]);
 	const maxNumber = 1;
 
 	const handleClose = () => {
@@ -85,6 +75,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 		setImages([]);
 		setBanner([]);
 		onClose();
+		setError("");
 	};
 
 	const onChange = (imageList: any) => {
@@ -107,7 +98,6 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 		setValue("banner", item?.banner);
 		setBanner([{ data_url: item?.banner }] as any);
 		setValue("content", item?.content);
-		console.log("banner", getValues("content"));
 	}, [getValues, item, setValue]);
 
 	const handleSubmit = async () => {
@@ -116,14 +106,13 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 			return;
 		}
 		const image = getValues("image");
-		const banner = getValues("banner");
 		const content = getValues("content");
 		if (!image) {
 			setError("Please upload an image to proceed.");
 			return;
 		}
-		if (!banner) {
-			setError("Please upload an banner to proceed.");
+		if (banner.length === 0) {
+			setError("Please upload a banner to proceed.");
 			return;
 		}
 		if (!content) {
@@ -138,21 +127,78 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 			.replace(/Đ/g, "D")
 			.replaceAll(" ", "-")
 			.toLowerCase();
-		const response = await addService({
-			id: item.id,
-			title: values.title,
-			description: values.description,
-			slug,
-			image,
-			banner: values.banner,
-			content,
-		} as any);
-		if (response) {
-			handleClose();
+		if (images?.[0]?.file) {
+			const res = await uploadImage(images?.[0]?.file);
+			const resBanner = await uploadImage(banner?.[0]?.file);
+
+			await updateService({
+				id: item.id,
+				title: values.title,
+				description: values.description,
+				slug,
+				image: res?.data?.url,
+				banner: resBanner?.data?.url,
+				content,
+			} as any);
+		} else {
+			await updateService({
+				id: item.id,
+				title: values.title,
+				description: values.description,
+				slug,
+				image: image,
+				banner: getValues("banner"),
+				content,
+			} as any);
 		}
+		refetch && refetch();
+		handleClose();
 	};
 
-	const content = watch("content");
+	const imageHandler = useCallback(() => {
+		const input: any = document.createElement("input");
+		input.setAttribute("type", "file");
+		input.click();
+
+		input.onchange = async () => {
+			const file = input?.files?.[0];
+			console.log(input.files);
+			const quillObj = quillRef?.current?.getEditor();
+			const range = quillObj?.getSelection();
+			try {
+				const res = await uploadImage(file);
+				quillObj?.editor?.insertEmbed(range?.index, "image", res?.data?.url);
+				setValue(
+					"content",
+					document.querySelector(".ql-editor")?.innerHTML as string
+				);
+			} catch (err) {
+				console.log("Storage err: ", err);
+			}
+		};
+	}, [uploadImage, setValue]);
+
+	const modules = useMemo(
+		() => ({
+			toolbar: {
+				container: [
+					[{ header: "1" }, { header: "2" }, { font: [] }],
+					[{ size: [] }],
+					["bold", "italic", "underline", "strike", "blockquote"],
+					[
+						{ list: "ordered" },
+						{ list: "bullet" },
+						{ indent: "-1" },
+						{ indent: "+1" },
+					],
+					["link", "image", "video"],
+					["clean"],
+				],
+				handlers: { image: () => imageHandler() },
+			},
+		}),
+		[imageHandler]
+	);
 
 	return (
 		<Modal
@@ -304,12 +350,17 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 				</ImageUploading>
 				<ReactQuill
 					theme="snow"
-					value={content}
+					value={watch("content")}
 					onChange={(value) => setValue("content", value)}
 					bounds={".app"}
 					placeholder={"Write something.."}
 					modules={modules}
 					formats={formats}
+					ref={(element) => {
+						if (element != null) {
+							quillRef.current = element;
+						}
+					}}
 				/>
 				{error && (
 					<Alert
@@ -329,7 +380,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 						Cancel
 					</LoadingButton>
 					<LoadingButton
-						loading={isPending}
+						loading={isPending || isUploading}
 						onClick={handleSubmit}
 						variant="contained"
 						color="success"

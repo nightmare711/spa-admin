@@ -6,6 +6,7 @@ import ImageUploading from "react-images-uploading";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useForm } from "react-hook-form";
 import { useAddNewBanner } from "../../../hooks/useBanner";
+import { useUploadImage } from "../../../hooks/useUpload";
 
 interface IEditModalProps {
 	open: boolean;
@@ -22,7 +23,9 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 		},
 	});
 
-	const [images, setImages] = useState([]);
+	const { mutateAsync: uploadImage, isPending: isUploading } = useUploadImage();
+
+	const [images, setImages] = useState<any>([]);
 	const maxNumber = 1;
 
 	const handleClose = () => {
@@ -46,11 +49,23 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 		if (!url) {
 			setError("Please upload an image to proceed.");
 		}
-		await addBanner({
-			title: getValues("title"),
-			description: getValues("description"),
-			url,
-		});
+
+		if (images?.[0]?.file) {
+			const res = await uploadImage(images?.[0]?.file);
+
+			await addBanner({
+				title: getValues("title"),
+				description: getValues("description"),
+				url: res?.data?.url,
+			});
+		} else {
+			await addBanner({
+				title: getValues("title"),
+				description: getValues("description"),
+				url: url,
+			});
+		}
+
 		handleClose();
 	};
 
@@ -136,7 +151,7 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 						Cancel
 					</LoadingButton>
 					<LoadingButton
-						loading={isPending}
+						loading={isPending || isUploading}
 						onClick={handleSubmit}
 						variant="contained"
 						color="success"

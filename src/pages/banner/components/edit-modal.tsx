@@ -6,6 +6,7 @@ import ImageUploading from "react-images-uploading";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useForm } from "react-hook-form";
 import { useUpdateBanner } from "../../../hooks/useBanner";
+import { useUploadImage } from "../../../hooks/useUpload";
 
 interface IEditModalProps {
 	open: boolean;
@@ -15,6 +16,7 @@ interface IEditModalProps {
 const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 	const [error, setError] = useState("");
 	const { mutateAsync: updateBanner, isPending } = useUpdateBanner();
+	const { mutateAsync: uploadImage, isPending: isUploading } = useUploadImage();
 	const { register, setValue, trigger, getValues, reset } = useForm({
 		defaultValues: {
 			title: "",
@@ -22,7 +24,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 			url: "",
 		},
 	});
-	const [images, setImages] = useState([]);
+	const [images, setImages] = useState<any>([]);
 	const maxNumber = 1;
 
 	const onChange = (imageList: any, addUpdateIndex: any) => {
@@ -46,13 +48,27 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 		const url = getValues("url");
 		if (!url) {
 			setError("Please upload an image to proceed.");
+			return;
 		}
-		await updateBanner({
-			id: item.id,
-			title: getValues("title"),
-			description: getValues("description"),
-			url,
-		});
+
+		if (images?.[0]?.file) {
+			const res = await uploadImage(images?.[0]?.file);
+
+			await updateBanner({
+				id: item.id,
+				title: getValues("title"),
+				description: getValues("description"),
+				url: res?.data?.url,
+			});
+		} else {
+			await updateBanner({
+				id: item.id,
+				title: getValues("title"),
+				description: getValues("description"),
+				url: url,
+			});
+		}
+
 		handleClose();
 	};
 
@@ -147,7 +163,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 						Cancel
 					</LoadingButton>
 					<LoadingButton
-						loading={isPending}
+						loading={isPending || isUploading}
 						onClick={handleSubmit}
 						variant="contained"
 						color="success"

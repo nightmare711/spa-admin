@@ -6,39 +6,43 @@ import { toast } from "react-toastify";
 export const useGetServices = () => {
 	return useQuery({
 		queryKey: [useGetServices.name],
-		queryFn: async () => (await http.get("/api/v1/products"))?.data,
+		queryFn: async () => {
+			const response = (await http.get("/api/v1/products"))?.data;
+			console.log("response", response);
+			return response;
+		},
 	});
 };
 
-export const useAddService = () => {
+export const useAddService = (onSuccess?: () => void) => {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationKey: [useAddService.name],
 		mutationFn: async (newService: any) => {
-			console.log(newService);
 			return (await http.post("/api/v1/products", newService))?.data;
 		},
-		onSuccess: () => {
+		onSuccess: async () => {
 			toast.success("Service added successfully");
-			queryClient.invalidateQueries({
+			await queryClient.invalidateQueries({
 				queryKey: [useGetServices.name],
 			});
+			onSuccess && onSuccess();
 		},
 	});
 };
-export const useUpdateServiceById = () => {
+export const useUpdateServiceById = (onSuccess?: () => void) => {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationKey: [useUpdateServiceById.name],
 		mutationFn: async (updatedService: any) => {
-			const data = updatedService;
-			return (await http.put(`/api/v1/products/update`, data))?.data;
+			return (await http.put(`/api/v1/products/update`, updatedService))?.data;
 		},
-		onSuccess: () => {
+		onSuccess: async () => {
 			toast.success("Service updated successfully");
-			queryClient.invalidateQueries({
+			await queryClient.invalidateQueries({
 				queryKey: [useGetServices.name],
 			});
+			onSuccess && onSuccess();
 		},
 		onError: (error: any) => {
 			toast.error(`Error updating service: ${error.message}`);

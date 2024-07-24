@@ -1,5 +1,5 @@
 import { Modal } from "antd";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { Wrapper } from "./edit-modal.styled";
 import { Alert, Button, TextField } from "@mui/material";
 import ImageUploading from "react-images-uploading";
@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import ReactQuill from "react-quill";
 import { PhotoView } from "react-photo-view";
 import { useUpdateNewsById } from "../../../hooks/useNews";
+import { useUploadImage } from "../../../hooks/useUpload";
 
 interface IEditModalProps {
 	open: boolean;
@@ -15,25 +16,6 @@ interface IEditModalProps {
 	item: any;
 }
 
-const modules = {
-	toolbar: [
-		[{ header: "1" }, { header: "2" }, { font: [] }],
-		[{ size: [] }],
-		["bold", "italic", "underline", "strike", "blockquote"],
-		[
-			{ list: "ordered" },
-			{ list: "bullet" },
-			{ indent: "-1" },
-			{ indent: "+1" },
-		],
-		["link", "image", "video"],
-		["clean"],
-	],
-	clipboard: {
-		// toggle to add extra line breaks when pasting HTML:
-		matchVisual: false,
-	},
-};
 /*
  * Quill editor formats
  * See https://quilljs.com/docs/formats/
@@ -56,8 +38,10 @@ const formats = [
 ];
 
 const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
+	const quillRef = useRef<any>();
+	const { mutateAsync: uploadImage, isPending: isUploading } = useUploadImage();
 	const [error, setError] = useState("");
-	const { mutateAsync: addNew, isPending } = useUpdateNewsById();
+	const { mutateAsync: updateNews, isPending } = useUpdateNewsById();
 	const {
 		register,
 		setValue,
@@ -76,8 +60,8 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 		},
 	});
 
-	const [images, setImages] = useState([]);
-	const [banner, setBanner] = useState([]);
+	const [images, setImages] = useState<any>([]);
+	const [banner, setBanner] = useState<any>([]);
 	const maxNumber = 1;
 
 	const handleClose = () => {
@@ -85,6 +69,8 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 		setImages([]);
 		setBanner([]);
 		onClose();
+		setError("");
+		console.log(getValues());
 	};
 
 	const onChange = (imageList: any) => {
@@ -107,7 +93,6 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 		setValue("banner", item?.banner);
 		setBanner([{ data_url: item?.banner }] as any);
 		setValue("content", item?.content);
-		console.log("banner", getValues("content"));
 	}, [getValues, item, setValue]);
 
 	const handleSubmit = async () => {
@@ -116,14 +101,13 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 			return;
 		}
 		const image = getValues("image");
-		const banner = getValues("banner");
 		const content = getValues("content");
 		if (!image) {
 			setError("Please upload an image to proceed.");
 			return;
 		}
-		if (!banner) {
-			setError("Please upload an banner to proceed.");
+		if (banner.length === 0) {
+			setError("Please upload a banner to proceed.");
 			return;
 		}
 		if (!content) {
@@ -138,26 +122,85 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 			.replace(/Đ/g, "D")
 			.replaceAll(" ", "-")
 			.toLowerCase();
-		const response = await addNew({
-			id: item.id,
-			title: values.title,
-			description: values.description,
-			slug,
-			image,
-			banner: values.banner,
-			content,
-		} as any);
-		if (response) {
-			handleClose();
+
+		if (images?.[0]?.file) {
+			const res = await uploadImage(images?.[0]?.file);
+			const resBanner = await uploadImage(banner?.[0]?.file);
+
+			await updateNews({
+				id: item.id,
+				title: values.title,
+				description: values.description,
+				slug,
+				image: res?.data?.url,
+				banner: resBanner?.data?.url,
+				content,
+			} as any);
+		} else {
+			await updateNews({
+				id: item.id,
+				title: values.title,
+				description: values.description,
+				slug,
+				image: image,
+				banner: getValues("banner"),
+				content,
+			} as any);
 		}
+
+		handleClose();
 	};
+
+	const imageHandler = useCallback(() => {
+		const input: any = document.createElement("input");
+		input.setAttribute("type", "file");
+		input.click();
+
+		input.onchange = async () => {
+			const file = input?.files?.[0];
+			const quillObj = quillRef?.current?.getEditor();
+			const range = quillObj?.getSelection();
+			try {
+				const res = await uploadImage(file);
+				quillObj?.editor?.insertEmbed(range?.index, "image", res?.data?.url);
+				setValue(
+					"content",
+					document.querySelector(".ql-editor")?.innerHTML as string
+				);
+			} catch (err) {
+				console.log("Storage err: ", err);
+			}
+		};
+	}, [uploadImage, setValue]);
+
+	const modules = useMemo(
+		() => ({
+			toolbar: {
+				container: [
+					[{ header: "1" }, { header: "2" }, { font: [] }],
+					[{ size: [] }],
+					["bold", "italic", "underline", "strike", "blockquote"],
+					[
+						{ list: "ordered" },
+						{ list: "bullet" },
+						{ indent: "-1" },
+						{ indent: "+1" },
+					],
+					["link", "image", "video"],
+					["clean"],
+				],
+				handlers: { image: () => imageHandler() },
+			},
+		}),
+		[imageHandler]
+	);
 
 	const content = watch("content");
 
 	return (
 		<Modal
 			destroyOnClose
-			title={`Edit service ${item?.id}`}
+			title={`Edit news ${item?.id}`}
 			open={open}
 			onCancel={handleClose}
 			footer={null}
@@ -302,6 +345,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 					}}
 				</ImageUploading>
 				<ReactQuill
+					ref={quillRef}
 					theme="snow"
 					value={content}
 					onChange={(value) => setValue("content", value)}
@@ -328,12 +372,12 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 						Cancel
 					</LoadingButton>
 					<LoadingButton
-						loading={isPending}
+						loading={isPending || isUploading}
 						onClick={handleSubmit}
 						variant="contained"
 						color="success"
 					>
-						Edit Service
+						Edit News
 					</LoadingButton>
 				</div>
 			</Wrapper>
