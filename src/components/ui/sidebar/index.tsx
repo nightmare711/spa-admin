@@ -47,6 +47,10 @@ const SidebarComponent: React.FC = () => {
 			navigate({ to: "/news" });
 		}),
 
+		getItem("Contact", "15", <SnippetsOutlined />, undefined, () => {
+			navigate({ to: "/contact" });
+		}),
+
 		{
 			key: 9,
 			icon: <LogoutOutlined />,

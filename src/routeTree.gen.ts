@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as ServicesImport } from './routes/services'
 import { Route as NewsImport } from './routes/news'
 import { Route as LoginImport } from './routes/login'
+import { Route as ContactImport } from './routes/contact'
 import { Route as BannerImport } from './routes/banner'
 import { Route as IndexImport } from './routes/index'
 
@@ -31,6 +32,11 @@ const NewsRoute = NewsImport.update({
 
 const LoginRoute = LoginImport.update({
   path: '/login',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ContactRoute = ContactImport.update({
+  path: '/contact',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -62,6 +68,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BannerImport
       parentRoute: typeof rootRoute
     }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactImport
+      parentRoute: typeof rootRoute
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -91,6 +104,7 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren({
   IndexRoute,
   BannerRoute,
+  ContactRoute,
   LoginRoute,
   NewsRoute,
   ServicesRoute,
@@ -106,6 +120,7 @@ export const routeTree = rootRoute.addChildren({
       "children": [
         "/",
         "/banner",
+        "/contact",
         "/login",
         "/news",
         "/services"
@@ -116,6 +131,9 @@ export const routeTree = rootRoute.addChildren({
     },
     "/banner": {
       "filePath": "banner.ts"
+    },
+    "/contact": {
+      "filePath": "contact.ts"
     },
     "/login": {
       "filePath": "login.ts"
