@@ -103,15 +103,15 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 		const image = getValues("image");
 		const content = getValues("content");
 		if (!image) {
-			setError("Please upload an image to proceed.");
+			setError("Vui lòng upload ảnh tiêu đề.");
 			return;
 		}
 		if (banner.length === 0) {
-			setError("Please upload a banner to proceed.");
+			setError("Vui lòng upload ảnh banner.");
 			return;
 		}
 		if (!content) {
-			setError("Please write content to proceed.");
+			setError("Vui lòng nhập nội dung bài viết.");
 			return;
 		}
 		const values: any = getValues();
@@ -200,7 +200,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 	return (
 		<Modal
 			destroyOnClose
-			title={`Edit news ${item?.id}`}
+			title={`Chỉnh sửa bài viết ${item?.id}`}
 			open={open}
 			onCancel={handleClose}
 			footer={null}
@@ -210,22 +210,22 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 				<TextField
 					className="title-text"
 					fullWidth
-					label="Title"
+					label="Tiêu đề"
 					{...register("title", { required: true })}
 					size="small"
 					error={!!errors.title}
-					helperText={errors.title ? "Title is required" : ""}
+					helperText={errors.title ? "Vui lòng nhập tiêu đề" : ""}
 				/>
 				<TextField
 					fullWidth
 					style={{ marginTop: "10px" }}
-					label="Description"
+					label="Mô tả"
 					{...register("description", {
 						required: true,
 					})}
 					size="small"
 					error={!!errors.description}
-					helperText={errors.description ? "Description is required" : ""}
+					helperText={errors.description ? "Vui lòng nhập mô tả" : ""}
 				/>
 				<ImageUploading
 					multiple
@@ -247,7 +247,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 						return (
 							// write your building UI
 							<div className="upload__image-wrapper">
-								<span className="label-uploader">Preview Image</span>
+								<span className="label-uploader">Ảnh tiêu đề</span>
 								{images.length < maxNumber && (
 									<button
 										className="update"
@@ -255,7 +255,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 										onClick={onImageUpload}
 										{...dragProps}
 									>
-										Click or Drop here
+										Click hoặc thả ảnh vào đây
 									</button>
 								)}
 								{imageList.map((image, index) => (
@@ -310,7 +310,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 										onClick={onImageUpload}
 										{...dragProps}
 									>
-										Click or Drop here
+										Click hoặc thả ảnh vào đây
 									</button>
 								)}
 								{imageList.map((image, index) => (
@@ -377,7 +377,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 						variant="contained"
 						color="success"
 					>
-						Edit News
+						Chỉnh sửa
 					</LoadingButton>
 				</div>
 			</Wrapper>

@@ -89,11 +89,11 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 		const image = getValues("image");
 		const content = getValues("content");
 		if (!image) {
-			setError("Please upload an image to proceed.");
+			setError("Vui lòng nhập ảnh tiêu đề.");
 			return;
 		}
 		if (banner.length === 0) {
-			setError("Please upload a banner to proceed.");
+			setError("Vui lòng nhập ảnh banner.");
 			return;
 		}
 		if (!content) {
@@ -187,7 +187,7 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 	return (
 		<Modal
 			destroyOnClose
-			title={`Add New Service`}
+			title={`Thêm Dịch Vụ`}
 			open={open}
 			onCancel={handleClose}
 			footer={null}
@@ -197,22 +197,22 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 				<TextField
 					className="title-text"
 					fullWidth
-					label="Title"
+					label="Tiêu đè"
 					{...register("title", { required: true })}
 					size="small"
 					error={!!errors.title}
-					helperText={errors.title ? "Title is required" : ""}
+					helperText={errors.title ? "Vui lòng nhập tiêu đề" : ""}
 				/>
 				<TextField
 					fullWidth
 					style={{ marginTop: "10px" }}
-					label="Description"
+					label="Mô tả"
 					{...register("description", {
 						required: true,
 					})}
 					size="small"
 					error={!!errors.description}
-					helperText={errors.description ? "Description is required" : ""}
+					helperText={errors.description ? "Vui lòng nhập mô tả" : ""}
 				/>
 				<ImageUploading
 					multiple
@@ -234,7 +234,7 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 						return (
 							// write your building UI
 							<div className="upload__image-wrapper">
-								<span className="label-uploader">Preview Image</span>
+								<span className="label-uploader">Ảnh tiêu đề</span>
 								{images.length < maxNumber && (
 									<button
 										className="update"
@@ -242,7 +242,7 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 										onClick={onImageUpload}
 										{...dragProps}
 									>
-										Click or Drop here
+										Click hoặc thả ảnh vào đây
 									</button>
 								)}
 								{imageList.map((image, index) => (
@@ -297,7 +297,7 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 										onClick={onImageUpload}
 										{...dragProps}
 									>
-										Click or Drop here
+										Click hoặc thả ảnh vào đây
 									</button>
 								)}
 								{imageList.map((image, index) => (
@@ -364,7 +364,7 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 						variant="contained"
 						color="success"
 					>
-						Add New Service
+						Thêm Dịch Vụ
 					</LoadingButton>
 				</div>
 			</Wrapper>

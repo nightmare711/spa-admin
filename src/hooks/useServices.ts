@@ -22,7 +22,7 @@ export const useAddService = (onSuccess?: () => void) => {
 			return (await http.post("/api/v1/products", newService))?.data;
 		},
 		onSuccess: async () => {
-			toast.success("Service added successfully");
+			toast.success("Thêm dịch vụ thành công.");
 			await queryClient.invalidateQueries({
 				queryKey: [useGetServices.name],
 			});
@@ -38,14 +38,14 @@ export const useUpdateServiceById = (onSuccess?: () => void) => {
 			return (await http.put(`/api/v1/products/update`, updatedService))?.data;
 		},
 		onSuccess: async () => {
-			toast.success("Service updated successfully");
+			toast.success("Chỉnh sửa thành công.");
 			await queryClient.invalidateQueries({
 				queryKey: [useGetServices.name],
 			});
 			onSuccess && onSuccess();
 		},
 		onError: (error: any) => {
-			toast.error(`Error updating service: ${error.message}`);
+			toast.error(`Lỗi chỉnh sửa dịch vụ: ${error.message}`);
 		},
 	});
 };

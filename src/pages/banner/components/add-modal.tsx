@@ -47,7 +47,7 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 		}
 		const url = getValues("url");
 		if (!url) {
-			setError("Please upload an image to proceed.");
+			setError("Vui lòng thêm hình ảnh.");
 		}
 
 		if (images?.[0]?.file) {
@@ -72,7 +72,7 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 	return (
 		<Modal
 			destroyOnClose
-			title={`Add new Banner`}
+			title={`Thêm Banner`}
 			open={open}
 			onCancel={onClose}
 			footer={null}
@@ -81,13 +81,13 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 				<TextField
 					className="title-text"
 					fullWidth
-					label="Title"
+					label="Tiêu đề"
 					{...register("title")}
 				/>
 				<TextField
 					fullWidth
 					style={{ marginTop: "10px" }}
-					label="Description"
+					label="Mô tả"
 					{...register("description")}
 				/>
 				<ImageUploading
@@ -116,7 +116,7 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 									onClick={onImageUpload}
 									{...dragProps}
 								>
-									Click or Drop here
+									Click hoặc Thả ảnh vào đây
 								</button>
 								&nbsp;
 								{imageList.map((image, index) => (
@@ -156,7 +156,7 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 						variant="contained"
 						color="success"
 					>
-						Add New Banner
+						Thêm Banner
 					</LoadingButton>
 				</div>
 			</Wrapper>

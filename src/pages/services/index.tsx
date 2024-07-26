@@ -54,7 +54,7 @@ const ServicesComponent = withLoading(({ turnOffPageLoading }) => {
 				/>
 			) : null}
 			<Breadcrumb style={{ margin: "16px 0" }}>
-				<Breadcrumb.Item>Dasboard</Breadcrumb.Item>
+				<Breadcrumb.Item>Admin</Breadcrumb.Item>
 				<Breadcrumb.Item>
 					<span style={{ textTransform: "capitalize" }}>
 						{path?.toLowerCase()}
@@ -68,7 +68,7 @@ const ServicesComponent = withLoading(({ turnOffPageLoading }) => {
 					icon={<AddIcon />}
 					className="action"
 				>
-					Add New Service
+					Thêm Dịch Vụ
 				</Button>
 			</div>
 			<TableContainer component={Paper}>
@@ -76,10 +76,10 @@ const ServicesComponent = withLoading(({ turnOffPageLoading }) => {
 					<TableHead>
 						<TableRow>
 							<TableCell>ID</TableCell>
-							<TableCell align="center">Title</TableCell>
-							<TableCell align="center">Description</TableCell>
+							<TableCell align="center">Tiêu đề</TableCell>
+							<TableCell align="center">Mô tả</TableCell>
 							<TableCell align="center">Slug</TableCell>
-							<TableCell align="center">Actions</TableCell>
+							<TableCell align="center">Sửa, Xóa</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>

@@ -21,7 +21,7 @@ export const useMarkAsRead = () => {
 			queryClient.invalidateQueries({
 				queryKey: [useGetContact.name],
 			});
-			toast.success("Contact marked as read successfully.");
+			toast.success("Đánh dấu đã liên hệ khách hàng thành công.");
 		},
 		onError: (err) => {
 			toast.error(err?.message || "Failed to mark contact as read.");

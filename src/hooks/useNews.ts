@@ -19,7 +19,7 @@ export const useAddNews = () => {
 			return (await http.post("/api/v1/news", newNews))?.data;
 		},
 		onSuccess: () => {
-			toast.success("News added successfully");
+			toast.success("Thêm tin tức thành công");
 			queryClient.invalidateQueries({
 				queryKey: [useGetNews.name],
 			});
@@ -35,13 +35,13 @@ export const useUpdateNewsById = () => {
 			return (await http.put(`/api/v1/news/update`, data))?.data;
 		},
 		onSuccess: () => {
-			toast.success("News updated successfully");
+			toast.success("Chỉnh sửa thành công.");
 			queryClient.invalidateQueries({
 				queryKey: [useGetNews.name],
 			});
 		},
 		onError: (error: any) => {
-			toast.error(`Error updating news: ${error.message}`);
+			toast.error(`Lỗi xóa tin tức: ${error.message}`);
 		},
 	});
 };
@@ -54,13 +54,13 @@ export const useDeleteNewsById = () => {
 			return (await http.delete(`/api/v1/news/${newsId}`))?.data;
 		},
 		onSuccess: () => {
-			toast.success("News deleted successfully");
+			toast.success("Xóa thành công.");
 			queryClient.invalidateQueries({
 				queryKey: [useGetNews.name],
 			});
 		},
 		onError: (error: any) => {
-			toast.error(`Error deleting news: ${error.message}`);
+			toast.error(`Lỗi xóa tin tức: ${error.message}`);
 		},
 	});
 };

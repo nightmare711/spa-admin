@@ -29,16 +29,14 @@ const LoginComponent = () => {
 				className="w-full max-w-sm border shadow-lg p-6 rounded-lg form"
 				onSubmit={handleSubmit(onSubmit)}
 			>
-				<h2 className="text-2xl font-bold mb-4 text-center">Welcome Back !</h2>
-				<p className="mb-6 text-center">
-					Sign in to continue to Thẩm Mỹ Hoài An
-				</p>
+				<h2 className="text-2xl font-bold mb-4 text-center">Admin</h2>
+				<p className="mb-6 text-center">Đăng nhập quản trị Admin</p>
 				<div className="mb-4">
 					<Controller
 						name="email"
 						control={control}
 						defaultValue=""
-						rules={{ required: "Email is required" }}
+						rules={{ required: "Vui lòng nhập email" }}
 						render={({ field, fieldState: { error } }) => (
 							<TextField
 								{...field}
@@ -70,7 +68,7 @@ const LoginComponent = () => {
 						name="password"
 						control={control}
 						defaultValue=""
-						rules={{ required: "Password is required" }}
+						rules={{ required: "Vui lòng nhập mật khẩu" }}
 						render={({ field, fieldState: { error } }) => (
 							<TextField
 								{...field}
@@ -101,7 +99,7 @@ const LoginComponent = () => {
 						className="text-sm text-blue-500 float-right mb-2 hover:underline"
 						href="#"
 					>
-						Forgot password?
+						Quên mật khẩu?
 					</a>
 				</div>
 
@@ -118,7 +116,7 @@ const LoginComponent = () => {
 						fontSize: "16px",
 					}}
 				>
-					Sign In
+					Đăng nhập
 				</LoadingButton>
 			</form>
 		</Wrapper>

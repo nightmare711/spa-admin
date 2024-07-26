@@ -47,7 +47,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 		}
 		const url = getValues("url");
 		if (!url) {
-			setError("Please upload an image to proceed.");
+			setError("Vui lòng thêm hình ảnh.");
 			return;
 		}
 
@@ -82,7 +82,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 	return (
 		<Modal
 			destroyOnClose
-			title={`Edit Banner #${item?.id}`}
+			title={`Chỉnh sửa Banner #${item?.id}`}
 			open={open}
 			onCancel={onClose}
 			footer={null}
@@ -91,14 +91,14 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 				<TextField
 					className="title-text"
 					fullWidth
-					label="Title"
+					label="Tiêu đề"
 					defaultValue={item?.title}
 					{...register("title")}
 				/>
 				<TextField
 					fullWidth
 					style={{ marginTop: "10px" }}
-					label="Description"
+					label="Mô tả"
 					defaultValue={item?.description}
 					{...register("description")}
 				/>
@@ -128,7 +128,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 									onClick={onImageUpload}
 									{...dragProps}
 								>
-									Click or Drop here
+									Click hoặc thả hình vào đây
 								</button>
 								&nbsp;
 								{imageList.map((image, index) => (
@@ -139,7 +139,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 												color="error"
 												onClick={() => onImageRemove(index)}
 											>
-												Remove
+												Xóa hình ảnh
 											</Button>
 										</div>
 									</div>
@@ -168,7 +168,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 						variant="contained"
 						color="success"
 					>
-						Update
+						Cập nhật
 					</LoadingButton>
 				</div>
 			</Wrapper>

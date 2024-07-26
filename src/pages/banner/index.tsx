@@ -44,7 +44,7 @@ const BannerComponent = withLoading(({ turnOffPageLoading }) => {
 	return (
 		<Wrapper>
 			<Breadcrumb style={{ margin: "16px 0" }}>
-				<Breadcrumb.Item>Dasboard</Breadcrumb.Item>
+				<Breadcrumb.Item>Admin</Breadcrumb.Item>
 				<Breadcrumb.Item>
 					<span style={{ textTransform: "capitalize" }}>
 						{path?.toLowerCase()}
@@ -58,7 +58,7 @@ const BannerComponent = withLoading(({ turnOffPageLoading }) => {
 					icon={<AddIcon />}
 					className="action"
 				>
-					Add New Banner
+					Thêm Banner Mới
 				</Button>
 			</div>
 			<AddModal open={open} onClose={() => setOpen(false)} />
@@ -68,10 +68,10 @@ const BannerComponent = withLoading(({ turnOffPageLoading }) => {
 					<TableHead>
 						<TableRow>
 							<TableCell>ID</TableCell>
-							<TableCell align="center">Title</TableCell>
-							<TableCell align="center">Description</TableCell>
-							<TableCell align="center">Image</TableCell>
-							<TableCell align="center">Actions</TableCell>
+							<TableCell align="center">Tiêu đề</TableCell>
+							<TableCell align="center">Mô tả</TableCell>
+							<TableCell align="center">Hình ảnh</TableCell>
+							<TableCell align="center">Sửa, Xóa</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>

@@ -33,7 +33,7 @@ const ContactComponent = withLoading(({ turnOffPageLoading }) => {
 	return (
 		<Wrapper>
 			<Breadcrumb style={{ margin: "16px 0" }}>
-				<Breadcrumb.Item>Dasboard</Breadcrumb.Item>
+				<Breadcrumb.Item>Admin</Breadcrumb.Item>
 				<Breadcrumb.Item>
 					<span style={{ textTransform: "capitalize" }}>
 						{path?.toLowerCase()}
@@ -45,10 +45,10 @@ const ContactComponent = withLoading(({ turnOffPageLoading }) => {
 					<TableHead>
 						<TableRow>
 							<TableCell>ID</TableCell>
-							<TableCell align="center">Name</TableCell>
-							<TableCell align="center">Phone Number</TableCell>
-							<TableCell align="center">Service</TableCell>
-							<TableCell align="center">Actions</TableCell>
+							<TableCell align="center">Tên khách hàng</TableCell>
+							<TableCell align="center">Số Điện Thoại</TableCell>
+							<TableCell align="center">Dịch vụ cần tư vấn</TableCell>
+							<TableCell align="center">Trang thái</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -69,8 +69,9 @@ const ContactComponent = withLoading(({ turnOffPageLoading }) => {
 											<LoadingButton
 												loading={isPending}
 												onClick={() => markAsRead(row.id)}
+												className="LoadingButton"
 											>
-												Mark as read
+												Chưa liên hệ khách hàng
 											</LoadingButton>
 										) : (
 											<IconButton>

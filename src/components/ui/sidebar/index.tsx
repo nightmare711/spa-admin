@@ -40,21 +40,21 @@ const SidebarComponent: React.FC = () => {
 		getItem("Banner", "1", <DatabaseOutlined />, undefined, () => {
 			navigate({ to: "/banner" });
 		}),
-		getItem("Services", "2", <ProductOutlined />, undefined, () => {
+		getItem("Dịch vụ", "2", <ProductOutlined />, undefined, () => {
 			navigate({ to: "/services" });
 		}),
-		getItem("News", "3", <SnippetsOutlined />, undefined, () => {
+		getItem("Tin tức", "3", <SnippetsOutlined />, undefined, () => {
 			navigate({ to: "/news" });
 		}),
 
-		getItem("Contact", "15", <SnippetsOutlined />, undefined, () => {
+		getItem("Liên hệ khách hàng", "15", <SnippetsOutlined />, undefined, () => {
 			navigate({ to: "/contact" });
 		}),
 
 		{
 			key: 9,
 			icon: <LogoutOutlined />,
-			label: "Logout",
+			label: "Đăng xuất",
 			onClick: () => dispatch(deleteAccount()),
 		},
 	];

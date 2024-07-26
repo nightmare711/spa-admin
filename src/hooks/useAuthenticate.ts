@@ -22,7 +22,7 @@ export const useLoginByEmail = () => {
 			return response;
 		},
 		onSuccess: () => {
-			toast.success("Welcome back! You have successfully logged in.");
+			toast.success("Đăng nhập thành công.");
 			navigate({ to: "/banner" });
 		},
 		onError: (err) => {

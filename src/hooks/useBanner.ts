@@ -32,7 +32,7 @@ export const useUpdateBanner = () => {
 		}) => (await http.post(`/api/banners/update`, banner))?.data,
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: [useGetBanner.name] });
-			toast.success("Banner updated successfully");
+			toast.success("Update thành công.");
 		},
 		onError: (err: any) => {
 			toast.error(err?.data?.message || "Something were wrong");
@@ -51,7 +51,7 @@ export const useAddNewBanner = () => {
 		}) => (await http.post(`/api/banners`, banner))?.data,
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: [useGetBanner.name] });
-			toast.success("Banner added successfully");
+			toast.success("Thêm thành công.");
 		},
 		onError: (err: any) => {
 			toast.error(err?.data?.message || "Something were wrong");

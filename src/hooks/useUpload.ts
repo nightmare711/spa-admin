@@ -18,7 +18,7 @@ export const useUploadImage = () => {
 		},
 
 		onError: (error: any) => {
-			toast.error(`Error uploading image: ${error.message}`);
+			toast.error(`Lỗi Upload hình: ${error.message}`);
 		},
 	});
 };
