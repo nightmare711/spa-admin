@@ -7,7 +7,7 @@ export const useGetServices = () => {
 	return useQuery({
 		queryKey: [useGetServices.name],
 		queryFn: async () => {
-			const response = (await http.get("/api/v1/products"))?.data;
+			const response = (await http.get("/api/v1/products?isActive=true"))?.data;
 			console.log("response", response);
 			return response;
 		},

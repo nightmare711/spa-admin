@@ -4,6 +4,11 @@ import {
 	SnippetsOutlined,
 	ProductOutlined,
 	DatabaseOutlined,
+	PhoneOutlined,
+	SignatureOutlined,
+	ContactsOutlined,
+	FileSearchOutlined,
+	FileImageOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Layout, Menu } from "antd";
@@ -40,6 +45,9 @@ const SidebarComponent: React.FC = () => {
 		getItem("Banner", "1", <DatabaseOutlined />, undefined, () => {
 			navigate({ to: "/banner" });
 		}),
+		getItem("Giới thiệu", "2", <ContactsOutlined />, undefined, () => {
+			navigate({ to: "/intro" });
+		}),
 		getItem("Dịch vụ", "2", <ProductOutlined />, undefined, () => {
 			navigate({ to: "/services" });
 		}),
@@ -47,8 +55,18 @@ const SidebarComponent: React.FC = () => {
 			navigate({ to: "/news" });
 		}),
 
-		getItem("Liên hệ khách hàng", "15", <SnippetsOutlined />, undefined, () => {
+		getItem("Khóa học", "15", <FileSearchOutlined />, undefined, () => {
+			navigate({ to: "/course" });
+		}),
+		getItem("Thư viện hình ảnh", "15", <FileImageOutlined />, undefined, () => {
+			navigate({ to: "/library" });
+		}),
+		getItem("Liên hệ khách hàng", "15", <PhoneOutlined />, undefined, () => {
 			navigate({ to: "/contact" });
+		}),
+
+		getItem("Đổi mật khẩu", "15", <SignatureOutlined />, undefined, () => {
+			navigate({ to: "/password" });
 		}),
 
 		{

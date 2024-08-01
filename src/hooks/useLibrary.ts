@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 export const useGetBanner = () => {
 	return useQuery({
 		queryKey: [useGetBanner.name],
-		queryFn: async () => (await http.get("/api/v1/banners"))?.data,
+		queryFn: async () => (await http.get("/api/v1/library"))?.data,
 	});
 };
 
@@ -13,7 +13,7 @@ export const useDeleteBanner = () => {
 	return useMutation({
 		mutationKey: [useDeleteBanner.name],
 		mutationFn: async (id: number) =>
-			(await http.delete(`/api/v1/banners/delete/${id}`))?.data,
+			(await http.delete(`/api/v1/library/delete/${id}`))?.data,
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: [useGetBanner.name] });
 		},
@@ -29,7 +29,7 @@ export const useUpdateBanner = () => {
 			title: string;
 			description: string;
 			url: string;
-		}) => (await http.post(`/api/v1/banners/update`, banner))?.data,
+		}) => (await http.post(`/api/v1/library/update`, banner))?.data,
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: [useGetBanner.name] });
 			toast.success("Update thành công.");
@@ -48,7 +48,7 @@ export const useAddNewBanner = () => {
 			title: string;
 			description: string;
 			url: string;
-		}) => (await http.post(`/api/v1/banners`, banner))?.data,
+		}) => (await http.post(`/api/v1/library`, banner))?.data,
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: [useGetBanner.name] });
 			toast.success("Thêm thành công.");

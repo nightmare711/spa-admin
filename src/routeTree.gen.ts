@@ -12,8 +12,12 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as ServicesImport } from './routes/services'
+import { Route as PasswordImport } from './routes/password'
 import { Route as NewsImport } from './routes/news'
 import { Route as LoginImport } from './routes/login'
+import { Route as LibraryImport } from './routes/library'
+import { Route as IntroImport } from './routes/intro'
+import { Route as CourseImport } from './routes/course'
 import { Route as ContactImport } from './routes/contact'
 import { Route as BannerImport } from './routes/banner'
 import { Route as IndexImport } from './routes/index'
@@ -25,6 +29,11 @@ const ServicesRoute = ServicesImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const PasswordRoute = PasswordImport.update({
+  path: '/password',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const NewsRoute = NewsImport.update({
   path: '/news',
   getParentRoute: () => rootRoute,
@@ -32,6 +41,21 @@ const NewsRoute = NewsImport.update({
 
 const LoginRoute = LoginImport.update({
   path: '/login',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const LibraryRoute = LibraryImport.update({
+  path: '/library',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const IntroRoute = IntroImport.update({
+  path: '/intro',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CourseRoute = CourseImport.update({
+  path: '/course',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -75,6 +99,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactImport
       parentRoute: typeof rootRoute
     }
+    '/course': {
+      id: '/course'
+      path: '/course'
+      fullPath: '/course'
+      preLoaderRoute: typeof CourseImport
+      parentRoute: typeof rootRoute
+    }
+    '/intro': {
+      id: '/intro'
+      path: '/intro'
+      fullPath: '/intro'
+      preLoaderRoute: typeof IntroImport
+      parentRoute: typeof rootRoute
+    }
+    '/library': {
+      id: '/library'
+      path: '/library'
+      fullPath: '/library'
+      preLoaderRoute: typeof LibraryImport
+      parentRoute: typeof rootRoute
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -87,6 +132,13 @@ declare module '@tanstack/react-router' {
       path: '/news'
       fullPath: '/news'
       preLoaderRoute: typeof NewsImport
+      parentRoute: typeof rootRoute
+    }
+    '/password': {
+      id: '/password'
+      path: '/password'
+      fullPath: '/password'
+      preLoaderRoute: typeof PasswordImport
       parentRoute: typeof rootRoute
     }
     '/services': {
@@ -105,8 +157,12 @@ export const routeTree = rootRoute.addChildren({
   IndexRoute,
   BannerRoute,
   ContactRoute,
+  CourseRoute,
+  IntroRoute,
+  LibraryRoute,
   LoginRoute,
   NewsRoute,
+  PasswordRoute,
   ServicesRoute,
 })
 
@@ -121,8 +177,12 @@ export const routeTree = rootRoute.addChildren({
         "/",
         "/banner",
         "/contact",
+        "/course",
+        "/intro",
+        "/library",
         "/login",
         "/news",
+        "/password",
         "/services"
       ]
     },
@@ -135,11 +195,23 @@ export const routeTree = rootRoute.addChildren({
     "/contact": {
       "filePath": "contact.ts"
     },
+    "/course": {
+      "filePath": "course.ts"
+    },
+    "/intro": {
+      "filePath": "intro.ts"
+    },
+    "/library": {
+      "filePath": "library.ts"
+    },
     "/login": {
       "filePath": "login.ts"
     },
     "/news": {
       "filePath": "news.ts"
+    },
+    "/password": {
+      "filePath": "password.ts"
     },
     "/services": {
       "filePath": "services.ts"
