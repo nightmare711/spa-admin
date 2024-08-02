@@ -67,11 +67,13 @@ const LibraryComponent = withLoading(({ turnOffPageLoading }) => {
 				<Table sx={{ minWidth: 650 }} aria-label="simple table">
 					<TableHead>
 						<TableRow>
-							<TableCell>ID</TableCell>
+							<TableCell width={"50px"}>ID</TableCell>
 							<TableCell align="center">Tiêu đề</TableCell>
 							<TableCell align="center">Mô tả</TableCell>
 							<TableCell align="center">Hình ảnh</TableCell>
-							<TableCell align="center">Sửa, Xóa</TableCell>
+							<TableCell align="center" width={"160px"}>
+								Sửa, Xóa
+							</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>

@@ -54,11 +54,11 @@ const PasswordComponent = withLoading(({ turnOffPageLoading }) => {
 		reset();
 	});
 
-	const onSubmit = async (data: any) => {
+	const onSubmit = async () => {
 		const isValid = await trigger();
 		const values = getValues();
 		if (isValid) {
-			await updatePassword(values.newPassword);
+			await updatePassword(values.newPassword as any);
 		} else {
 			toast.error("Vui lòng nhập đầy đủ thông tin");
 		}

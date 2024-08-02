@@ -11,21 +11,32 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as ServicesImport } from './routes/services'
+import { Route as TinTucImport } from './routes/tin-tuc'
+import { Route as ThuVienImport } from './routes/thu-vien'
+import { Route as ThongTinImport } from './routes/thong-tin'
 import { Route as PasswordImport } from './routes/password'
-import { Route as NewsImport } from './routes/news'
 import { Route as LoginImport } from './routes/login'
-import { Route as LibraryImport } from './routes/library'
-import { Route as IntroImport } from './routes/intro'
-import { Route as CourseImport } from './routes/course'
-import { Route as ContactImport } from './routes/contact'
+import { Route as LienHeImport } from './routes/lien-he'
+import { Route as KhoaHocImport } from './routes/khoa-hoc'
+import { Route as GioiThieuImport } from './routes/gioi-thieu'
+import { Route as DichVuImport } from './routes/dich-vu'
 import { Route as BannerImport } from './routes/banner'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
 
-const ServicesRoute = ServicesImport.update({
-  path: '/services',
+const TinTucRoute = TinTucImport.update({
+  path: '/tin-tuc',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ThuVienRoute = ThuVienImport.update({
+  path: '/thu-vien',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ThongTinRoute = ThongTinImport.update({
+  path: '/thong-tin',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -34,33 +45,28 @@ const PasswordRoute = PasswordImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const NewsRoute = NewsImport.update({
-  path: '/news',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const LoginRoute = LoginImport.update({
   path: '/login',
   getParentRoute: () => rootRoute,
 } as any)
 
-const LibraryRoute = LibraryImport.update({
-  path: '/library',
+const LienHeRoute = LienHeImport.update({
+  path: '/lien-he',
   getParentRoute: () => rootRoute,
 } as any)
 
-const IntroRoute = IntroImport.update({
-  path: '/intro',
+const KhoaHocRoute = KhoaHocImport.update({
+  path: '/khoa-hoc',
   getParentRoute: () => rootRoute,
 } as any)
 
-const CourseRoute = CourseImport.update({
-  path: '/course',
+const GioiThieuRoute = GioiThieuImport.update({
+  path: '/gioi-thieu',
   getParentRoute: () => rootRoute,
 } as any)
 
-const ContactRoute = ContactImport.update({
-  path: '/contact',
+const DichVuRoute = DichVuImport.update({
+  path: '/dich-vu',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -92,32 +98,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BannerImport
       parentRoute: typeof rootRoute
     }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactImport
+    '/dich-vu': {
+      id: '/dich-vu'
+      path: '/dich-vu'
+      fullPath: '/dich-vu'
+      preLoaderRoute: typeof DichVuImport
       parentRoute: typeof rootRoute
     }
-    '/course': {
-      id: '/course'
-      path: '/course'
-      fullPath: '/course'
-      preLoaderRoute: typeof CourseImport
+    '/gioi-thieu': {
+      id: '/gioi-thieu'
+      path: '/gioi-thieu'
+      fullPath: '/gioi-thieu'
+      preLoaderRoute: typeof GioiThieuImport
       parentRoute: typeof rootRoute
     }
-    '/intro': {
-      id: '/intro'
-      path: '/intro'
-      fullPath: '/intro'
-      preLoaderRoute: typeof IntroImport
+    '/khoa-hoc': {
+      id: '/khoa-hoc'
+      path: '/khoa-hoc'
+      fullPath: '/khoa-hoc'
+      preLoaderRoute: typeof KhoaHocImport
       parentRoute: typeof rootRoute
     }
-    '/library': {
-      id: '/library'
-      path: '/library'
-      fullPath: '/library'
-      preLoaderRoute: typeof LibraryImport
+    '/lien-he': {
+      id: '/lien-he'
+      path: '/lien-he'
+      fullPath: '/lien-he'
+      preLoaderRoute: typeof LienHeImport
       parentRoute: typeof rootRoute
     }
     '/login': {
@@ -127,13 +133,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
-    '/news': {
-      id: '/news'
-      path: '/news'
-      fullPath: '/news'
-      preLoaderRoute: typeof NewsImport
-      parentRoute: typeof rootRoute
-    }
     '/password': {
       id: '/password'
       path: '/password'
@@ -141,11 +140,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PasswordImport
       parentRoute: typeof rootRoute
     }
-    '/services': {
-      id: '/services'
-      path: '/services'
-      fullPath: '/services'
-      preLoaderRoute: typeof ServicesImport
+    '/thong-tin': {
+      id: '/thong-tin'
+      path: '/thong-tin'
+      fullPath: '/thong-tin'
+      preLoaderRoute: typeof ThongTinImport
+      parentRoute: typeof rootRoute
+    }
+    '/thu-vien': {
+      id: '/thu-vien'
+      path: '/thu-vien'
+      fullPath: '/thu-vien'
+      preLoaderRoute: typeof ThuVienImport
+      parentRoute: typeof rootRoute
+    }
+    '/tin-tuc': {
+      id: '/tin-tuc'
+      path: '/tin-tuc'
+      fullPath: '/tin-tuc'
+      preLoaderRoute: typeof TinTucImport
       parentRoute: typeof rootRoute
     }
   }
@@ -156,14 +169,15 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren({
   IndexRoute,
   BannerRoute,
-  ContactRoute,
-  CourseRoute,
-  IntroRoute,
-  LibraryRoute,
+  DichVuRoute,
+  GioiThieuRoute,
+  KhoaHocRoute,
+  LienHeRoute,
   LoginRoute,
-  NewsRoute,
   PasswordRoute,
-  ServicesRoute,
+  ThongTinRoute,
+  ThuVienRoute,
+  TinTucRoute,
 })
 
 /* prettier-ignore-end */
@@ -176,14 +190,15 @@ export const routeTree = rootRoute.addChildren({
       "children": [
         "/",
         "/banner",
-        "/contact",
-        "/course",
-        "/intro",
-        "/library",
+        "/dich-vu",
+        "/gioi-thieu",
+        "/khoa-hoc",
+        "/lien-he",
         "/login",
-        "/news",
         "/password",
-        "/services"
+        "/thong-tin",
+        "/thu-vien",
+        "/tin-tuc"
       ]
     },
     "/": {
@@ -192,29 +207,32 @@ export const routeTree = rootRoute.addChildren({
     "/banner": {
       "filePath": "banner.ts"
     },
-    "/contact": {
-      "filePath": "contact.ts"
+    "/dich-vu": {
+      "filePath": "dich-vu.ts"
     },
-    "/course": {
-      "filePath": "course.ts"
+    "/gioi-thieu": {
+      "filePath": "gioi-thieu.ts"
     },
-    "/intro": {
-      "filePath": "intro.ts"
+    "/khoa-hoc": {
+      "filePath": "khoa-hoc.ts"
     },
-    "/library": {
-      "filePath": "library.ts"
+    "/lien-he": {
+      "filePath": "lien-he.ts"
     },
     "/login": {
       "filePath": "login.ts"
     },
-    "/news": {
-      "filePath": "news.ts"
-    },
     "/password": {
       "filePath": "password.ts"
     },
-    "/services": {
-      "filePath": "services.ts"
+    "/thong-tin": {
+      "filePath": "thong-tin.ts"
+    },
+    "/thu-vien": {
+      "filePath": "thu-vien.ts"
+    },
+    "/tin-tuc": {
+      "filePath": "tin-tuc.ts"
     }
   }
 }

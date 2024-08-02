@@ -9,6 +9,7 @@ import {
 	ContactsOutlined,
 	FileSearchOutlined,
 	FileImageOutlined,
+	DesktopOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Layout, Menu } from "antd";
@@ -46,26 +47,32 @@ const SidebarComponent: React.FC = () => {
 			navigate({ to: "/banner" });
 		}),
 		getItem("Giới thiệu", "2", <ContactsOutlined />, undefined, () => {
-			navigate({ to: "/intro" });
+			navigate({ to: "/gioi-thieu" });
 		}),
-		getItem("Dịch vụ", "2", <ProductOutlined />, undefined, () => {
-			navigate({ to: "/services" });
+		getItem("Dịch vụ", "3", <ProductOutlined />, undefined, () => {
+			navigate({ to: "/dich-vu" });
 		}),
-		getItem("Tin tức", "3", <SnippetsOutlined />, undefined, () => {
-			navigate({ to: "/news" });
-		}),
-
-		getItem("Khóa học", "15", <FileSearchOutlined />, undefined, () => {
-			navigate({ to: "/course" });
-		}),
-		getItem("Thư viện hình ảnh", "15", <FileImageOutlined />, undefined, () => {
-			navigate({ to: "/library" });
-		}),
-		getItem("Liên hệ khách hàng", "15", <PhoneOutlined />, undefined, () => {
-			navigate({ to: "/contact" });
+		getItem("Tin tức", "4", <SnippetsOutlined />, undefined, () => {
+			navigate({ to: "/tin-tuc" });
 		}),
 
-		getItem("Đổi mật khẩu", "15", <SignatureOutlined />, undefined, () => {
+		getItem("Khóa học", "5", <FileSearchOutlined />, undefined, () => {
+			navigate({ to: "/khoa-hoc" });
+		}),
+
+		getItem("Thư viện hình ảnh", "6", <FileImageOutlined />, undefined, () => {
+			navigate({ to: "/thu-vien" });
+		}),
+
+		getItem("Liên hệ khách hàng", "7", <PhoneOutlined />, undefined, () => {
+			navigate({ to: "/lien-he" });
+		}),
+
+		getItem("Thông tin website", "8", <DesktopOutlined />, undefined, () => {
+			navigate({ to: "/thong-tin" });
+		}),
+
+		getItem("Đổi mật khẩu", "9", <SignatureOutlined />, undefined, () => {
 			navigate({ to: "/password" });
 		}),
 
