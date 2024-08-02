@@ -1,7 +1,13 @@
 import { Modal } from "antd";
 import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { Wrapper } from "./add-modal.styled";
-import { Alert, Button, TextField } from "@mui/material";
+import {
+	Alert,
+	Button,
+	Checkbox,
+	FormControlLabel,
+	TextField,
+} from "@mui/material";
 import ImageUploading from "react-images-uploading";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useForm } from "react-hook-form";
@@ -82,6 +88,7 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 		setBanner(imageList);
 		setValue("banner", imageList?.[0]?.data_url);
 	};
+	const isActive = watch("isActive");
 
 	const handleSubmit = async () => {
 		const isValid = await trigger();
@@ -132,6 +139,7 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 				image: image,
 				banner: getValues("banner"),
 				content,
+				isActive: values.isActive,
 			} as any);
 		}
 
@@ -328,6 +336,16 @@ const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 						);
 					}}
 				</ImageUploading>
+
+				<FormControlLabel
+					control={
+						<Checkbox
+							checked={isActive}
+							onChange={(e) => setValue("isActive", e.target.checked)}
+						/>
+					}
+					label="Hiển thị"
+				/>
 				<ReactQuill
 					ref={(element) => {
 						if (element != null) {

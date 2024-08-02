@@ -1,37 +1,37 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import http from "../config/axios.config";
 import { toast } from "react-toastify";
-export const useGetBanner = () => {
+export const useGetLibraries = () => {
 	return useQuery({
-		queryKey: [useGetBanner.name],
-		queryFn: async () => (await http.get("/api/v1/library"))?.data,
+		queryKey: [useGetLibraries.name],
+		queryFn: async () => (await http.get("/api/v1/libraries"))?.data,
 	});
 };
 
-export const useDeleteBanner = () => {
+export const useDeleteLibrary = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationKey: [useDeleteBanner.name],
+		mutationKey: [useDeleteLibrary.name],
 		mutationFn: async (id: number) =>
-			(await http.delete(`/api/v1/library/delete/${id}`))?.data,
+			(await http.delete(`/api/v1/libraries/${id}`))?.data,
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: [useGetBanner.name] });
+			queryClient.invalidateQueries({ queryKey: [useGetLibraries.name] });
 		},
 	});
 };
 
-export const useUpdateBanner = () => {
+export const useUpdateLibrary = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationKey: [useUpdateBanner.name],
+		mutationKey: [useUpdateLibrary.name],
 		mutationFn: async (banner: {
 			id: number;
 			title: string;
 			description: string;
 			url: string;
-		}) => (await http.post(`/api/v1/library/update`, banner))?.data,
+		}) => (await http.put(`/api/v1/libraries/update`, banner))?.data,
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: [useGetBanner.name] });
+			queryClient.invalidateQueries({ queryKey: [useGetLibraries.name] });
 			toast.success("Update thành công.");
 		},
 		onError: (err: any) => {
@@ -40,17 +40,17 @@ export const useUpdateBanner = () => {
 	});
 };
 
-export const useAddNewBanner = () => {
+export const useAddNewLibrary = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationKey: [useAddNewBanner.name],
+		mutationKey: [useAddNewLibrary.name],
 		mutationFn: async (banner: {
 			title: string;
 			description: string;
 			url: string;
-		}) => (await http.post(`/api/v1/library`, banner))?.data,
+		}) => (await http.post(`/api/v1/libraries`, banner))?.data,
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: [useGetBanner.name] });
+			queryClient.invalidateQueries({ queryKey: [useGetLibraries.name] });
 			toast.success("Thêm thành công.");
 		},
 		onError: (err: any) => {

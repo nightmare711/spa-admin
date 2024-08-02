@@ -1,6 +1,5 @@
 import { memo, useEffect, useState } from "react";
 import { withSidebar } from "../../components/ui/sidebar/with-sidebar";
-import { useDeleteBanner, useGetBanner } from "../../hooks/useBanner";
 import {
 	IconButton,
 	Paper,
@@ -22,15 +21,16 @@ import { AddModal } from "./components/add-modal";
 import { useRouterState } from "@tanstack/react-router";
 import { withLoading } from "../../components/ui/loading/with-loading";
 import { PhotoView } from "react-photo-view";
+import { useDeleteLibrary, useGetLibraries } from "../../hooks/useLibrary";
 
 const LibraryComponent = withLoading(({ turnOffPageLoading }) => {
 	const [selectedItem, setSelectedItem] = useState<any>(null);
 	const [open, setOpen] = useState(false);
-	const { data, isFetched } = useGetBanner();
+	const { data, isFetched } = useGetLibraries();
 	const root = useRouterState();
 	const path = root.location.href.split("/")?.[1];
 
-	const { mutate: deleteBanner, isPending } = useDeleteBanner();
+	const { mutate: deleteBanner, isPending } = useDeleteLibrary();
 	const onClose = () => {
 		setSelectedItem(null);
 	};

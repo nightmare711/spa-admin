@@ -3,7 +3,7 @@ import { withSidebar } from "../../components/ui/sidebar/with-sidebar";
 import * as React from "react";
 
 import { Wrapper } from "./styled";
-import { Breadcrumb, Button } from "antd";
+import { Breadcrumb } from "antd";
 import { useRouterState } from "@tanstack/react-router";
 import { withLoading } from "../../components/ui/loading/with-loading";
 import IconButton from "@mui/material/IconButton";
@@ -14,8 +14,25 @@ import FormControl from "@mui/material/FormControl";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { Box } from "@mui/material";
+import { useForm, Controller } from "react-hook-form";
+import { useUpdatePassword } from "../../hooks/useUser";
+import LoadingButton from "@mui/lab/LoadingButton";
+import { toast } from "react-toastify";
 
 const PasswordComponent = withLoading(({ turnOffPageLoading }) => {
+	const {
+		control,
+		handleSubmit,
+		trigger,
+		formState: { errors },
+		reset,
+		getValues,
+	} = useForm({
+		defaultValues: {
+			newPassword: "",
+			confirmPassword: "",
+		},
+	});
 	const root = useRouterState();
 	const path = root.location.href.split("/")?.[1];
 
@@ -28,9 +45,24 @@ const PasswordComponent = withLoading(({ turnOffPageLoading }) => {
 	) => {
 		event.preventDefault();
 	};
+
 	React.useEffect(() => {
 		turnOffPageLoading();
 	}, []);
+
+	const { mutate: updatePassword, isPending } = useUpdatePassword(() => {
+		reset();
+	});
+
+	const onSubmit = async (data: any) => {
+		const isValid = await trigger();
+		const values = getValues();
+		if (isValid) {
+			await updatePassword(values.newPassword);
+		} else {
+			toast.error("Vui lòng nhập đầy đủ thông tin");
+		}
+	};
 
 	return (
 		<Wrapper>
@@ -45,6 +77,7 @@ const PasswordComponent = withLoading(({ turnOffPageLoading }) => {
 			<div className="container">
 				<h1>Đổi mật khẩu ADMIN</h1>
 				<Box
+					component="form"
 					sx={{
 						display: "flex",
 						flexDirection: "column",
@@ -52,78 +85,82 @@ const PasswordComponent = withLoading(({ turnOffPageLoading }) => {
 						margin: "0 auto",
 					}}
 				>
-					<FormControl sx={{ m: 1 }} variant="outlined">
-						<InputLabel htmlFor="outlined-adornment-password">
-							Mật khảu cũ
-						</InputLabel>
-						<OutlinedInput
-							id="outlined-adornment-password"
-							type={showPassword ? "text" : "password"}
-							endAdornment={
-								<InputAdornment position="end">
-									<IconButton
-										aria-label="toggle password visibility"
-										onClick={handleClickShowPassword}
-										onMouseDown={handleMouseDownPassword}
-										edge="end"
-									>
-										{showPassword ? <VisibilityOff /> : <Visibility />}
-									</IconButton>
-								</InputAdornment>
-							}
-							label="Password"
-						/>
-					</FormControl>
-					<FormControl sx={{ m: 1 }} variant="outlined">
-						<InputLabel htmlFor="outlined-adornment-password">
-							Mật Khẩu mới
-						</InputLabel>
-						<OutlinedInput
-							id="outlined-adornment-password"
-							type={showPassword ? "text" : "password"}
-							endAdornment={
-								<InputAdornment position="end">
-									<IconButton
-										aria-label="toggle password visibility"
-										onClick={handleClickShowPassword}
-										onMouseDown={handleMouseDownPassword}
-										edge="end"
-									>
-										{showPassword ? <VisibilityOff /> : <Visibility />}
-									</IconButton>
-								</InputAdornment>
-							}
-							label="Password"
-						/>
-					</FormControl>
-					<FormControl sx={{ m: 1 }} variant="outlined">
-						<InputLabel htmlFor="outlined-adornment-password">
-							Xác nhận mật khẩu mới
-						</InputLabel>
-						<OutlinedInput
-							id="outlined-adornment-password"
-							type={showPassword ? "text" : "password"}
-							endAdornment={
-								<InputAdornment position="end">
-									<IconButton
-										aria-label="toggle password visibility"
-										onClick={handleClickShowPassword}
-										onMouseDown={handleMouseDownPassword}
-										edge="end"
-									>
-										{showPassword ? <VisibilityOff /> : <Visibility />}
-									</IconButton>
-								</InputAdornment>
-							}
-							label="Password"
-						/>
-					</FormControl>
+					<Controller
+						name="newPassword"
+						control={control}
+						rules={{ required: "Mật khẩu mới là bắt buộc" }}
+						render={({ field }) => (
+							<FormControl sx={{ m: 1 }} variant="outlined">
+								<InputLabel htmlFor="new-password">Mật khẩu mới</InputLabel>
+								<OutlinedInput
+									{...field}
+									error={!!errors.newPassword}
+									id="new-password"
+									type={showPassword ? "text" : "password"}
+									endAdornment={
+										<InputAdornment position="end">
+											<IconButton
+												aria-label="toggle password visibility"
+												onClick={handleClickShowPassword}
+												onMouseDown={handleMouseDownPassword}
+												edge="end"
+											>
+												{showPassword ? <VisibilityOff /> : <Visibility />}
+											</IconButton>
+										</InputAdornment>
+									}
+									label="Mật khẩu mới"
+								/>
+							</FormControl>
+						)}
+					/>
+					<Controller
+						name="confirmPassword"
+						control={control}
+						rules={{
+							required: "Xác nhận mật khẩu là bắt buộc",
+							validate: (value, formValues) =>
+								value === formValues.newPassword || "Mật khẩu không khớp",
+						}}
+						render={({ field }) => (
+							<FormControl sx={{ m: 1 }} variant="outlined">
+								<InputLabel htmlFor="confirm-password">
+									Xác nhận mật khẩu mới
+								</InputLabel>
+								<OutlinedInput
+									{...field}
+									id="confirm-password"
+									error={!!errors.confirmPassword}
+									type={showPassword ? "text" : "password"}
+									endAdornment={
+										<InputAdornment position="end">
+											<IconButton
+												aria-label="toggle password visibility"
+												onClick={handleClickShowPassword}
+												onMouseDown={handleMouseDownPassword}
+												edge="end"
+											>
+												{showPassword ? <VisibilityOff /> : <Visibility />}
+											</IconButton>
+										</InputAdornment>
+									}
+									label="Xác nhận mật khẩu mới"
+								/>
+							</FormControl>
+						)}
+					/>
+					<div className="actions-button">
+						<LoadingButton
+							className="action"
+							loading={isPending}
+							onClick={onSubmit}
+							color="primary"
+							variant="contained"
+						>
+							Đổi mật khẩu
+						</LoadingButton>
+					</div>
 				</Box>
-				<div className="actions-button">
-					<Button color="primary" className="action">
-						Đổi mật khẩu
-					</Button>
-				</div>
 			</div>
 		</Wrapper>
 	);

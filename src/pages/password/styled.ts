@@ -24,7 +24,6 @@ export const Wrapper = styled.div`
 			margin-bottom: 10px;
 
 			.action {
-				background-color: blue;
 				color: white;
 				width: 200px;
 				padding: 30px;

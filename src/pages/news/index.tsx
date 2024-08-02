@@ -1,6 +1,7 @@
 import { memo, useEffect, useState } from "react";
 import { withSidebar } from "../../components/ui/sidebar/with-sidebar";
 import {
+	Checkbox,
 	IconButton,
 	Paper,
 	Table,
@@ -74,7 +75,7 @@ const NewsComponent = withLoading(({ turnOffPageLoading }) => {
 							<TableCell>ID</TableCell>
 							<TableCell align="center">Tiêu đề</TableCell>
 							<TableCell align="center">Mô tả</TableCell>
-							<TableCell align="center">Slug</TableCell>
+							<TableCell align="center">Hiển thị</TableCell>
 							<TableCell align="center">Sửa, Xóa</TableCell>
 						</TableRow>
 					</TableHead>
@@ -89,7 +90,9 @@ const NewsComponent = withLoading(({ turnOffPageLoading }) => {
 								</TableCell>
 								<TableCell align="center">{row.title}</TableCell>
 								<TableCell align="center">{row.description}</TableCell>
-								<TableCell align="center">{row.slug}</TableCell>
+								<TableCell align="center">
+									<Checkbox checked={row.isActive} />
+								</TableCell>
 								<TableCell align="center">
 									<div className="actions">
 										<LoadingButton onClick={() => setSelectedItem(row)}>

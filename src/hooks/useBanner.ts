@@ -29,7 +29,7 @@ export const useUpdateBanner = () => {
 			title: string;
 			description: string;
 			url: string;
-		}) => (await http.post(`/api/v1/banners/update`, banner))?.data,
+		}) => (await http.put(`/api/v1/banners/update`, banner))?.data,
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: [useGetBanner.name] });
 			toast.success("Update thành công.");

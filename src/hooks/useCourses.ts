@@ -6,8 +6,7 @@ import { toast } from "react-toastify";
 export const useGetCourses = () => {
 	return useQuery({
 		queryKey: [useGetCourses.name],
-		queryFn: async () =>
-			(await http.get("/api/v1/courses?isActive=true"))?.data,
+		queryFn: async () => (await http.get("/api/v1/courses"))?.data,
 	});
 };
 

@@ -5,8 +5,8 @@ import { Alert, Button, TextField } from "@mui/material";
 import ImageUploading from "react-images-uploading";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useForm } from "react-hook-form";
-import { useAddNewBanner } from "../../../hooks/useBanner";
 import { useUploadImage } from "../../../hooks/useUpload";
+import { useAddNewLibrary } from "../../../hooks/useLibrary";
 
 interface IEditModalProps {
 	open: boolean;
@@ -14,7 +14,7 @@ interface IEditModalProps {
 }
 const AddModalComponent = ({ open, onClose }: IEditModalProps) => {
 	const [error, setError] = useState("");
-	const { mutateAsync: addBanner, isPending } = useAddNewBanner();
+	const { mutateAsync: addBanner, isPending } = useAddNewLibrary();
 	const { register, setValue, trigger, getValues, reset } = useForm({
 		defaultValues: {
 			title: "",

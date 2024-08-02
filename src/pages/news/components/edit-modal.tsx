@@ -1,7 +1,13 @@
 import { Modal } from "antd";
 import { memo, useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { Wrapper } from "./edit-modal.styled";
-import { Alert, Button, TextField } from "@mui/material";
+import {
+	Alert,
+	Button,
+	TextField,
+	Checkbox,
+	FormControlLabel,
+} from "@mui/material";
 import ImageUploading from "react-images-uploading";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useForm } from "react-hook-form";
@@ -57,6 +63,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 			image: item?.image,
 			banner: item?.banner,
 			content: item?.content,
+			isActive: item?.isActive,
 		},
 	});
 
@@ -93,6 +100,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 		setValue("banner", item?.banner);
 		setBanner([{ data_url: item?.banner }] as any);
 		setValue("content", item?.content);
+		setValue("isActive", item?.isActive);
 	}, [getValues, item, setValue]);
 
 	const handleSubmit = async () => {
@@ -135,6 +143,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 				image: res?.data?.url,
 				banner: resBanner?.data?.url,
 				content,
+				isActive: values.isActive,
 			} as any);
 		} else {
 			await updateNews({
@@ -145,6 +154,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 				image: image,
 				banner: getValues("banner"),
 				content,
+				isActive: values.isActive,
 			} as any);
 		}
 
@@ -344,6 +354,15 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 						);
 					}}
 				</ImageUploading>
+				<FormControlLabel
+					control={
+						<Checkbox
+							checked={watch("isActive")}
+							onChange={(e) => setValue("isActive", e.target.checked)}
+						/>
+					}
+					label="Hiển thị"
+				/>
 				<ReactQuill
 					ref={quillRef}
 					theme="snow"
@@ -354,6 +373,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 					modules={modules}
 					formats={formats}
 				/>
+
 				{error && (
 					<Alert
 						style={{ marginBottom: "10px", marginTop: "10px" }}

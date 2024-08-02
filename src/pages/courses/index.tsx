@@ -99,7 +99,7 @@ const CoursesComponent = withLoading(({ turnOffPageLoading }) => {
 								<TableCell align="center">{row.description}</TableCell>
 								<TableCell align="center">{row.slug}</TableCell>
 								<TableCell align="center">
-									<Checkbox {...label} />
+									<Checkbox checked={row.isActive} />
 								</TableCell>
 
 								<TableCell align="center">
