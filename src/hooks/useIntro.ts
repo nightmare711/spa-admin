@@ -3,64 +3,67 @@ import { useQueryClient } from "@tanstack/react-query";
 
 import http from "../config/axios.config";
 import { toast } from "react-toastify";
-export const useGetNews = () => {
+
+export const useGetIntroductions = () => {
 	return useQuery({
-		queryKey: [useGetNews.name],
-		queryFn: async () => (await http.get("/api/v1/news"))?.data,
+		queryKey: [useGetIntroductions.name],
+		queryFn: async () => (await http.get("/api/v1/introductions"))?.data,
 	});
 };
 
-export const useAddNews = () => {
+export const useAddIntroduction = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationKey: [useAddNews.name],
-		mutationFn: async (newNews: any) => {
-			console.log(newNews);
-			return (await http.post("/api/v1/news", newNews))?.data;
+		mutationKey: [useAddIntroduction.name],
+		mutationFn: async (newIntroduction: any) => {
+			console.log(newIntroduction);
+			return (await http.post("/api/v1/introductions", newIntroduction))?.data;
 		},
 		onSuccess: () => {
-			toast.success("Thêm tin tức thành công");
+			toast.success("Thêm giới thiệu thành công");
 			queryClient.invalidateQueries({
-				queryKey: [useGetNews.name],
+				queryKey: [useGetIntroductions.name],
 			});
 		},
 	});
 };
-export const useUpdateNewsById = () => {
+
+export const useUpdateIntroductionById = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationKey: [useUpdateNewsById.name],
-		mutationFn: async (updatedNews: any) => {
-			const data = updatedNews;
-			return (await http.put(`/api/v1/news/update`, data))?.data;
+		mutationKey: [useUpdateIntroductionById.name],
+		mutationFn: async (updatedIntroduction: any) => {
+			const data = updatedIntroduction;
+			return (await http.put(`/api/v1/introductions/update`, data))?.data;
 		},
 		onSuccess: () => {
 			toast.success("Chỉnh sửa thành công.");
 			queryClient.invalidateQueries({
-				queryKey: [useGetNews.name],
+				queryKey: [useGetIntroductions.name],
 			});
 		},
 		onError: (error: any) => {
-			toast.error(`Lỗi xóa tin tức: ${error.message}`);
+			toast.error(`Lỗi chỉnh sửa giới thiệu: ${error.message}`);
 		},
 	});
 };
 
-export const useDeleteNewsById = () => {
+export const useDeleteIntroductionById = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationKey: [useDeleteNewsById.name],
-		mutationFn: async (newsId: string) => {
-			return (await http.delete(`/api/v1/news/${newsId}`))?.data;
+		mutationKey: [useDeleteIntroductionById.name],
+		mutationFn: async (introductionId: string) => {
+			return (await http.delete(`/api/v1/introductions/${introductionId}`))
+				?.data;
 		},
 		onSuccess: () => {
 			toast.success("Xóa thành công.");
 			queryClient.invalidateQueries({
-				queryKey: [useGetNews.name],
+				queryKey: [useGetIntroductions.name],
 			});
 		},
 		onError: (error: any) => {
-			toast.error(`Lỗi xóa tin tức: ${error.message}`);
+			toast.error(`Lỗi xóa giới thiệu: ${error.message}`);
 		},
 	});
 };

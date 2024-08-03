@@ -1,13 +1,19 @@
 import { Modal } from "antd";
 import { memo, useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { Wrapper } from "./edit-modal.styled";
-import { Alert, Button, TextField } from "@mui/material";
+import {
+	Alert,
+	Button,
+	TextField,
+	Checkbox,
+	FormControlLabel,
+} from "@mui/material";
 import ImageUploading from "react-images-uploading";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useForm } from "react-hook-form";
 import ReactQuill from "react-quill";
 import { PhotoView } from "react-photo-view";
-import { useUpdateNewsById } from "../../../hooks/useNews";
+import { useUpdateIntroductionById } from "../../../hooks/useIntro";
 import { useUploadImage } from "../../../hooks/useUpload";
 
 interface IEditModalProps {
@@ -41,7 +47,8 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 	const quillRef = useRef<any>();
 	const { mutateAsync: uploadImage, isPending: isUploading } = useUploadImage();
 	const [error, setError] = useState("");
-	const { mutateAsync: updateNews, isPending } = useUpdateNewsById();
+	const { mutateAsync: updateIntroduction, isPending } =
+		useUpdateIntroductionById();
 	const {
 		register,
 		setValue,
@@ -57,6 +64,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 			image: item?.image,
 			banner: item?.banner,
 			content: item?.content,
+			isActive: item?.isActive,
 		},
 	});
 
@@ -93,6 +101,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 		setValue("banner", item?.banner);
 		setBanner([{ data_url: item?.banner }] as any);
 		setValue("content", item?.content);
+		setValue("isActive", item?.isActive);
 	}, [getValues, item, setValue]);
 
 	const handleSubmit = async () => {
@@ -111,7 +120,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 			return;
 		}
 		if (!content) {
-			setError("Vui lòng nhập nội dung bài viết.");
+			setError("Vui lòng nhập nội dung giới thiệu.");
 			return;
 		}
 		const values: any = getValues();
@@ -127,7 +136,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 			const res = await uploadImage(images?.[0]?.file);
 			const resBanner = await uploadImage(banner?.[0]?.file);
 
-			await updateNews({
+			await updateIntroduction({
 				id: item.id,
 				title: values.title,
 				description: values.description,
@@ -135,9 +144,10 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 				image: res?.data?.url,
 				banner: resBanner?.data?.url,
 				content,
+				isActive: values.isActive,
 			} as any);
 		} else {
-			await updateNews({
+			await updateIntroduction({
 				id: item.id,
 				title: values.title,
 				description: values.description,
@@ -145,6 +155,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 				image: image,
 				banner: getValues("banner"),
 				content,
+				isActive: values.isActive,
 			} as any);
 		}
 
@@ -200,7 +211,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 	return (
 		<Modal
 			destroyOnClose
-			title={`Chỉnh sửa bài viết ${item?.id}`}
+			title={`Chỉnh sửa giới thiệu ${item?.id}`}
 			open={open}
 			onCancel={handleClose}
 			footer={null}
@@ -344,6 +355,15 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 						);
 					}}
 				</ImageUploading>
+				<FormControlLabel
+					control={
+						<Checkbox
+							checked={watch("isActive")}
+							onChange={(e) => setValue("isActive", e.target.checked)}
+						/>
+					}
+					label="Hiển thị"
+				/>
 				<ReactQuill
 					ref={quillRef}
 					theme="snow"
@@ -354,6 +374,7 @@ const EditModalComponent = ({ open, onClose, item }: IEditModalProps) => {
 					modules={modules}
 					formats={formats}
 				/>
+
 				{error && (
 					<Alert
 						style={{ marginBottom: "10px", marginTop: "10px" }}

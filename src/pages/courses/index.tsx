@@ -43,8 +43,6 @@ const CoursesComponent = withLoading(({ turnOffPageLoading }) => {
 
 	const refetch = () => setForceRender(!forceRender);
 
-	const label = { inputProps: { "aria-label": "Checkbox demo" } };
-
 	return (
 		<Wrapper>
 			<AddModal open={open} onClose={() => setOpen(false)} />

@@ -22,7 +22,6 @@ import { toast } from "react-toastify";
 const PasswordComponent = withLoading(({ turnOffPageLoading }) => {
 	const {
 		control,
-		handleSubmit,
 		trigger,
 		formState: { errors },
 		reset,

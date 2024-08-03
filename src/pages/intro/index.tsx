@@ -1,6 +1,7 @@
 import { memo, useEffect, useState } from "react";
 import { withSidebar } from "../../components/ui/sidebar/with-sidebar";
 import {
+	Checkbox,
 	IconButton,
 	Paper,
 	Table,
@@ -19,14 +20,17 @@ import { Breadcrumb, Button, Typography } from "antd";
 import { useRouterState } from "@tanstack/react-router";
 import { AddModal } from "./components/add-modal";
 import { EditModal } from "./components/edit-modal";
-import { useDeleteNewsById, useGetNews } from "../../hooks/useNews";
+import {
+	useDeleteIntroductionById,
+	useGetIntroductions,
+} from "../../hooks/useIntro";
 import { withLoading } from "../../components/ui/loading/with-loading";
 
 const IntroComponent = withLoading(({ turnOffPageLoading }) => {
 	const [open, setOpen] = useState(false);
-	const { data, isFetched } = useGetNews();
+	const { data, isFetched } = useGetIntroductions();
 	const root = useRouterState();
-	const { mutate: deleteNew, isPending } = useDeleteNewsById();
+	const { mutate: deleteIntroduction, isPending } = useDeleteIntroductionById();
 	const path = root.location.href.split("/")?.[1];
 	const [selectedItem, setSelectedItem] = useState<any>(null);
 	const onClose = () => {
@@ -64,7 +68,7 @@ const IntroComponent = withLoading(({ turnOffPageLoading }) => {
 					icon={<AddIcon />}
 					className="action"
 				>
-					Thêm Bài Giới Thiệu
+					Thêm Giới Thiệu
 				</Button>
 			</div>
 			<TableContainer component={Paper}>
@@ -73,8 +77,8 @@ const IntroComponent = withLoading(({ turnOffPageLoading }) => {
 						<TableRow>
 							<TableCell width={"50px"}>ID</TableCell>
 							<TableCell align="center">Tiêu đề</TableCell>
-							<TableCell align="center">Mô tả</TableCell>
-							<TableCell align="center">Slug</TableCell>
+							<TableCell align="center">Miêu tả</TableCell>
+							<TableCell align="center">Hiển thị</TableCell>
 							<TableCell align="center" width={"160px"}>
 								Sửa, Xóa
 							</TableCell>
@@ -91,7 +95,9 @@ const IntroComponent = withLoading(({ turnOffPageLoading }) => {
 								</TableCell>
 								<TableCell align="center">{row.title}</TableCell>
 								<TableCell align="center">{row.description}</TableCell>
-								<TableCell align="center">{row.slug}</TableCell>
+								<TableCell align="center">
+									<Checkbox checked={row.isActive} />
+								</TableCell>
 								<TableCell align="center">
 									<div className="actions">
 										<LoadingButton onClick={() => setSelectedItem(row)}>
@@ -101,7 +107,7 @@ const IntroComponent = withLoading(({ turnOffPageLoading }) => {
 										</LoadingButton>
 										<LoadingButton
 											loading={isPending}
-											onClick={() => deleteNew(row.id)}
+											onClick={() => deleteIntroduction(row.id)}
 										>
 											<IconButton>
 												<DeleteForeverIcon color="error" />
